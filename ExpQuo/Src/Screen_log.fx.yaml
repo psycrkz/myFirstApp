@@ -1,0 +1,114 @@
+Screen_log As screen:
+
+    cpn_header_3 As cpn_header:
+        OnIconClick: =Navigate(Screen_home)
+        ScreenTitle: ="历史操作"
+
+    Icon6 As icon.BackArrow:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =50
+        Icon: =Icon.BackArrow
+        OnSelect: =Back()
+        Width: =49
+        X: =1304
+        Y: =7
+        ZIndex: =2
+
+    DataTable1 As dataTable.datatable:
+        BorderStyle: =BorderStyle.Solid
+        Color: =RGBA(0, 153, 204, 1)
+        DisplayMode: =DisplayMode.Edit
+        Fill: =RGBA(0, 0, 0, 0)
+        HeadingFill: =RGBA(0, 153, 204, 1)
+        Height: =704
+        Items: =Filter(Exp_Quotation_log,reqID = currReq.ID)
+        Width: =1366
+        X: =0
+        Y: =64
+        ZIndex: =3
+
+        Title_Column1 As dataTableColumn.textualColumn:
+            DisplayMode: =DisplayMode.Edit
+            FieldDisplayName: ="申请编号"
+            FieldName: ="Title"
+            FieldVariantName: ="textualColumn"
+            Height: =Parent.Height
+            LayoutHeight: =Parent.Height
+            Order: =1
+            Text: =ThisItem.Title
+            Width: =100
+            X: =0
+            Y: =0
+            ZIndex: =1
+
+        "'Operation Action_Column1' As dataTableColumn.textualColumn":
+            DisplayMode: =DisplayMode.Edit
+            FieldDisplayName: ="完成操作"
+            FieldName: ="OperationAction"
+            FieldVariantName: ="textualColumn"
+            Height: =Parent.Height
+            LayoutHeight: =Parent.Height
+            Order: =3
+            Text: =ThisItem.'Operation Action'
+            Width: =100
+            X: =0
+            Y: =0
+            ZIndex: =3
+
+        Comments_Column1 As dataTableColumn.textualColumn:
+            DisplayMode: =DisplayMode.Edit
+            FieldDisplayName: ="注释"
+            FieldName: ="Comments"
+            FieldVariantName: ="textualColumn"
+            Height: =Parent.Height
+            LayoutHeight: =Parent.Height
+            Order: =5
+            Text: =ThisItem.Comments
+            Width: =100
+            X: =0
+            Y: =0
+            ZIndex: =4
+
+        "'Pending Action_Column1' As dataTableColumn.textualColumn":
+            DisplayMode: =DisplayMode.Edit
+            FieldDisplayName: ="待操作"
+            FieldName: ="PendingAction"
+            FieldVariantName: ="textualColumn"
+            Height: =Parent.Height
+            LayoutHeight: =Parent.Height
+            Order: =4
+            Text: =ThisItem.'Pending Action'
+            Width: =100
+            X: =0
+            Y: =0
+            ZIndex: =5
+
+        Created_Column1 As dataTableColumn.dateTimeColumn:
+            DisplayMode: =DisplayMode.Edit
+            FieldDisplayName: ="操作时间"
+            FieldName: ="Created"
+            FieldVariantName: ="dateTimeColumn"
+            Height: =Parent.Height
+            LayoutHeight: =Parent.Height
+            Order: =7
+            Text: |-
+                =Text(ThisItem.Created,"yyyy-mm-dd hh:mm")
+            Width: =100
+            X: =0
+            Y: =0
+            ZIndex: =7
+
+        "'Modified By_Column1' As dataTableColumn.textualColumn":
+            DisplayMode: =DisplayMode.Edit
+            FieldDisplayName: ="操作人"
+            FieldName: ="Editor"
+            FieldVariantName: ="textualColumn"
+            Height: =Parent.Height
+            LayoutHeight: =Parent.Height
+            Order: =8
+            Text: =ThisItem.'Modified By'.DisplayName
+            Width: =100
+            X: =0
+            Y: =0
+            ZIndex: =8
+

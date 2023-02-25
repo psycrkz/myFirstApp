@@ -1,0 +1,78 @@
+cpn_confirm As CanvasComponent:
+    Fill: =RGBA(153, 153, 153, 0.4)
+    Height: =App.DesignHeight
+    Message: ="文本"
+    OnClose: =true
+    OnConfirm: =true
+    Title: ="文本"
+    Width: =App.DesignWidth
+    X: =0
+    Y: =0
+    ZIndex: =4
+
+    Container2 As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =300
+        Width: =600
+        X: =(cpn_confirm.Width-Self.Width)/2
+        Y: =(cpn_confirm.Height-Self.Height)/2
+        ZIndex: =1
+
+        icon_close_2 As icon.Cancel:
+            Height: =32
+            Icon: =Icon.Cancel
+            OnSelect: =cpn_confirm.OnClose();
+            Width: =48
+            X: =Parent.Width-Self.Width-20
+            Y: =20
+            ZIndex: =1
+
+        Label11 As label:
+            Align: =Align.Center
+            AutoHeight: =true
+            FontWeight: =FontWeight.Bold
+            Height: =73
+            LineHeight: =1.4
+            Text: =cpn_confirm.Message
+            Width: =Parent.Width-2* Self.X
+            X: =60
+            Y: =120
+            ZIndex: =4
+
+        btn_reset_3 As button:
+            Color: =RGBA(55,61,65,1)
+            Fill: =RGBA(230,231,210,1)
+            HoverColor: =RGBA(55,61,65,1)
+            HoverFill: =RGBA(230,231,232,1)
+            OnSelect: =cpn_confirm.OnClose();
+            PaddingRight: =5.00
+            PaddingTop: =5.00
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =14
+            Text: ="取消"
+            Width: =160.00
+            X: =(Parent.Width-2*Self.Width-40)/2
+            Y: =Parent.Height-Self.Height-40
+            ZIndex: =5
+
+        btn_reset_4 As button:
+            Color: =RGBA(255,255,255,1)
+            Fill: =RGBA(0,115,170,1)
+            HoverFill: =RGBA(230,231,232,1)
+            OnSelect: =cpn_confirm.OnConfirm();
+            PaddingRight: =5.00
+            PaddingTop: =5.00
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Size: =14
+            Text: ="确认"
+            Width: =160.00
+            X: =btn_reset_3.X+btn_reset_3.Width+40
+            Y: =Parent.Height-Self.Height-40
+            ZIndex: =6
+

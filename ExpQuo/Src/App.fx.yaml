@@ -1,0 +1,264 @@
+App As appinfo:
+    BackEnabled: =false
+    OnStart: |
+        =
+        Set(
+            _brandColor,
+            {
+                MainBlue: RGBA(
+                    0,
+                    115,
+                    170,
+                    1
+                ),
+                MainWhite: RGBA(
+                    255,
+                    255,
+                    255,
+                    1
+                ),
+                LightGrey: RGBA(
+                    227,
+                    227,
+                    227,
+                    1
+                ),
+                LightGreyTint: RGBA(
+                    230,
+                    231,
+                    232,
+                    1
+                ),
+                DeepBlue: RGBA(
+                    0,
+                    102,
+                    179,
+                    1
+                ),
+                DeepBlueTint: RGBA(
+                    150,
+                    175,
+                    219,
+                    1
+                ),
+                DeepGrey: RGBA(
+                    59,
+                    59,
+                    58,
+                    1
+                ),
+                DeepGreyTint: RGBA(
+                    147,
+                    149,
+                    152,
+                    1
+                ),
+                DeleteTint: RGBA(
+                    200,
+                    66,
+                    46,
+                    1
+                ),
+                Delete: RGBA(
+                    200,
+                    16,
+                    46,
+                    1
+                )
+            }
+        );
+        Set(
+            RequestStage1,
+            "方案确认"
+        );
+        Set(
+            RequestStage2,
+            "方案审批"
+        );
+        Set(
+            RequestStage3,
+            "产品定价"
+        );
+        Set(
+            RequestStage4,
+            "供应商待录入"
+        );
+        Set(
+            RequestStage5,
+            "报价审批"
+        );
+        Set(
+            RequestStage6,
+            "GM审批"
+        );
+        Set(
+            RequestStage7,
+            "赢单确认"
+        );
+        Set(
+            RequestStage8,
+            "待采购信息"
+        );
+        Set(
+            RequestStage10,
+            "销售提交"
+        );
+        Set(
+            RequestStage11,
+            "号码申请"
+        );
+        Set(
+            RequestStage9,
+            "已完成"
+        );
+        Set(
+            varReq,
+            Text(Param("ReqID"))
+        );
+        If(
+            Not(IsBlank(varReq)),
+            Set(
+                currReq,
+                LookUp(
+                    Exp_Quotation_main_list,
+                    ID = Value(varReq)
+                )
+            );
+            If(
+                currReq.产品类别.Value = "过滤器",
+                ClearCollect(
+                    filterList,
+                    Filter(
+                        Exp_Quotation_Fliter_Info,
+                        ReqID = Text(currReq.ID)
+                    )
+                )
+            )
+        );
+        Set(showLoad,true);
+        Set(
+            isSalesRole,
+            Not(
+                IsBlank(
+                    LookUp(
+                        Exp_Quotation_User_Roles,
+                        销售邮箱 = User().Email
+                    )
+                )
+            )
+        );
+        Set(userRole,LookUp(Exp_Quotation_User_Configure,TItle=User().Email).Role.Value);
+        If(
+            isSalesRole,
+            ClearCollect(
+                mainList,
+                Filter(
+                    Exp_Quotation_main_list,
+                    'Created By'.Email = User().Email
+                )
+            ),
+            
+        );
+        Set(
+            userTeam,
+            LookUp(
+                Exp_Quotation_User_Roles,
+                产品专员邮箱 = User().Email || 销售邮箱 = User().Email || 市场部经理邮箱 = User().Email || 销售经理邮箱 = User().Email || 销售支持邮箱 = User().Email
+            ).销售团队
+        );
+        Set(
+            userBus,
+            LookUp(
+                Exp_Quotation_Approver_Config,
+                Title = User().Email
+            ).业务线
+        );
+        If(
+            isSalesRole,
+            ClearCollect(
+                mainList,
+                Filter(
+                    Exp_Quotation_main_list,
+                    'Created By'.Email = User().Email
+                )
+            ),
+            If(
+                IsBlank(userTeam),
+                If(
+                    Not(IsBlank(userBus)),
+                    If(
+                        userBus = "CTS",
+                        ClearCollect(
+                            mainList,
+                            Filter(
+                                Exp_Quotation_main_list,
+                                业务线.Value = "CTS"
+                            )
+                        ),
+                        ClearCollect(
+                            mainList,
+                            Filter(
+                                Exp_Quotation_main_list,
+                                业务线.Value = "AGE" || 业务线.Value = "OFA"
+                            )
+                        )
+                    ),
+                    ClearCollect(
+                        mainList,
+                        Exp_Quotation_main_list
+                    )
+                ),
+                If(
+                    Not(IsBlank(userBus)),
+                    If(
+                        userBus = "CTS",
+                        ClearCollect(
+                            mainList,
+                            Filter(
+                                Exp_Quotation_main_list,
+                                业务线.Value = "CTS" || 销售团队 = userTeam
+                            )
+                        ),
+                        ClearCollect(
+                            mainList,
+                            Filter(
+                                Exp_Quotation_main_list,
+                                业务线.Value = "AGE" || 业务线.Value = "OFA" || 销售团队 = userTeam
+                            )
+                        )
+                    ),
+                    ClearCollect(
+                        mainList,
+                        Filter(
+                            Exp_Quotation_main_list,
+                            销售团队 = userTeam
+                        )
+                    )
+                )
+            )
+        );
+        Set(showLoad,false);
+    StartScreen: |-
+        =Switch(
+            Text(Param("stage")),
+            "方案确认",
+            Screen_product,
+            "方案审批",
+            Screen_Market_approval,
+            "产品定价",
+            Screen_product_tp,
+            "报价审批",
+            Screen_Business_approval,
+            "GM审批",
+            Screen_GM_approval,
+            "赢单确认",
+            Screen_sales_confirm,
+            "待采购信息",
+            Screen_product_cost,
+            "号码申请",
+            Screen_sales_support,
+            "销售提交",
+            Screen_new,
+            Screen_home
+        )
+

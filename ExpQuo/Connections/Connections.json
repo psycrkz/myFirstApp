@@ -1,0 +1,54 @@
+{
+  "29a83d04-ef5b-4155-933e-a99fabb5bfb1": {
+    "connectionParameters": {
+      "sku": "Enterprise"
+    },
+    "connectionRef": {
+      "apiTier": "Standard",
+      "displayName": "SharePoint",
+      "iconUri": "https://connectoricons-prod.azureedge.net/u/juanq/gateway/greyhound/3000.150.11/1.0.1613.3116/sharepointonline/icon.png",
+      "id": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "parameterHints": {},
+      "parameterHintsV2": {}
+    },
+    "datasets": {
+      "https://onevirtualoffice.sharepoint.com/sites/CT_CC_Pneumatech": {
+        "dataSources": {
+          "Exp_Quotation_Approver_Config": {
+            "tableName": "e7101359-b6b7-40cd-ad29-b3161b2804cd"
+          },
+          "Exp_Quotation_Fliter_Info": {
+            "tableName": "81600257-38b0-4607-8efd-7b1c31f74c3d"
+          },
+          "Exp_Quotation_log": {
+            "tableName": "552eedf2-ced1-4be9-a391-9a79d1d3c4f5"
+          },
+          "Exp_Quotation_main_list": {
+            "tableName": "f07c3966-4d9f-413b-8f10-c7ad25791eca"
+          },
+          "Exp_Quotation_User_Configure": {
+            "tableName": "edb8cade-38f8-4b3b-a6d1-df706b323761"
+          },
+          "Exp_Quotation_User_Roles": {
+            "tableName": "b3bd2fdf-b345-4070-935f-58d7c0155839"
+          },
+          "Sales": {
+            "tableName": "b0ee7722-9a1d-4118-8d94-7c66f19dbdbf"
+          }
+        }
+      }
+    },
+    "dataSources": [
+      "Exp_Quotation_main_list",
+      "Sales",
+      "Exp_Quotation_User_Configure",
+      "Exp_Quotation_User_Roles",
+      "Exp_Quotation_Approver_Config",
+      "Exp_Quotation_log",
+      "Exp_Quotation_Fliter_Info"
+    ],
+    "dependencies": {},
+    "dependents": [],
+    "id": "29a83d04-ef5b-4155-933e-a99fabb5bfb1"
+  }
+}

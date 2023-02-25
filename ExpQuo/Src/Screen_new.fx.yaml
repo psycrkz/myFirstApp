@@ -1,0 +1,3787 @@
+Screen_new As screen:
+    Fill: =
+    OnVisible: |
+        =UpdateContext({showLoad:false});UpdateContext({showConfirm:false});
+        If(
+            currReq.产品类别.Value = "过滤器",
+            ClearCollect(
+                filterList,
+                Filter(
+                    Exp_Quotation_Fliter_Info,
+                    ReqID = Text(currReq.ID)
+                )
+            )
+        )
+
+    cpn_header_1 As cpn_header:
+        OnIconClick: =Back();
+        ScreenTitle: ="非标询价系统"
+
+    Form_Ini As form:
+        DataSource: =Exp_Quotation_main_list
+        Height: =704
+        Item: =currReq
+        OnFailure: |-
+            =UpdateContext({showLoad: false});
+        OnSuccess: |
+            =If(
+                isDraft,
+                Patch(
+                    Exp_Quotation_main_list,
+                    Form_Ini.LastSubmit,
+                    {
+                        流程状态: RequestStage10,
+                        PendingOn: Form_Ini.LastSubmit.'Created By'.Email
+                    }
+                );
+                Patch(
+                    Exp_Quotation_log,
+                    Defaults(Exp_Quotation_log),
+                    {
+                        Title: Form_Ini.LastSubmit.Title,
+                        reqID: Form_Ini.LastSubmit.ID,
+                        'Operation Action': "销售保存草稿",
+                        'Pending Action': "待销售提交"
+                    }
+                ),
+                Patch(
+                    Exp_Quotation_log,
+                    Defaults(Exp_Quotation_log),
+                    {
+                        Title: Form_Ini.LastSubmit.Title,
+                        reqID: Form_Ini.LastSubmit.ID,
+                        'Operation Action': "销售提交",
+                        Comments:cpn_confirm_comment_6.CommentText,
+                        'Pending Action': "待方案确认"
+                    }
+                )
+            );
+            If(
+                Form_Ini.LastSubmit.产品类别.Value = "过滤器",
+                If(
+                    currReq.产品类别.Value = "过滤器",
+                    Patch(
+                        Exp_Quotation_Fliter_Info,
+                        Filter(
+                            Exp_Quotation_Fliter_Info,
+                            ReqID = Text(currReq.ID)
+                        ),
+                        filterList
+                    ),
+                    ForAll(
+                        filterPrd,
+                        Patch(
+                            Exp_Quotation_Fliter_Info,
+                            Defaults(Exp_Quotation_Fliter_Info),
+                            {
+                                Title: ThisRecord.Title,
+                                category: ThisRecord.category,
+                                accuracy: ThisRecord.accuracy,
+                                amount: ThisRecord.amount,
+                                Comment: ThisRecord.Comment,
+                                ReqID: Form_Ini.LastSubmit.ID
+                            }
+                        )
+                    )
+                )
+            );
+            UpdateContext({showLoad: false});
+            Back();
+            Notify("操作成功",NotificationType.Success,5000)
+        Width: =1366
+        Y: =64
+        ZIndex: =2
+
+        销售_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x9500__x552e_"
+            Default: =If(IsBlank(ThisItem.销售),LookUp(Sales,Mail=User().Email).Title,ThisItem.销售)
+            DisplayMode: =DisplayMode.View
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x9500__x552e_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x9500__x552e_")
+            Required: =false
+            Update: =DataCardValue26.Text
+            Width: =455
+            X: =0
+            Y: =0
+            ZIndex: =1
+
+            DataCardKey26 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue26.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue26 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey26.X + DataCardKey26.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage26 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue26.Y + DataCardValue26.Height
+                ZIndex: =3
+
+            StarVisible26 As label:
+                Align: =Align.Center
+                Height: =DataCardKey26.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey26.Y
+                ZIndex: =4
+
+        申请日期_DataCard1 As typedDataCard.dateEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x7533__x8bf7__x65e5__x671f_"
+            Default: =If(IsBlank(ThisItem.申请日期),Today(),ThisItem.申请日期)
+            DisplayMode: =DisplayMode.View
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x7533__x8bf7__x65e5__x671f_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =DataCardValue27.SelectedDate
+            Width: =455
+            X: =2
+            Y: =0
+            ZIndex: =1
+
+            DataCardKey27 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue27.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue27 As datepicker:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultDate: =Parent.Default
+                DisplayMode: =Parent.DisplayMode
+                EndYear: =Year(Today())+100
+                IsEditable: =true
+                PaddingBottom: =0
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                StartYear: =1899
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey27.X + DataCardKey27.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage27 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue27.Y + DataCardValue27.Height
+                ZIndex: =3
+
+            StarVisible27 As label:
+                Align: =Align.Center
+                Height: =DataCardKey27.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey27.Y
+                ZIndex: =4
+
+        DataCard1 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =_brandColor.MainBlue
+            Height: =39
+            Width: =1365
+            X: =0
+            Y: =1
+            ZIndex: =1
+
+            Label2 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                FontWeight: =FontWeight.Semibold
+                Size: =15
+                Text: ="项目基本信息"
+                Width: =1365
+                ZIndex: =1
+
+        项目名称_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x9879__x76ee__x540d__x79f0_"
+            Default: =If(sameProj,gly_main_list.Selected.项目名称,ThisItem.项目名称)
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x9879__x76ee__x540d__x79f0_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x9879__x76ee__x540d__x79f0_")
+            Required: =true
+            Update: =DataCardValue8.Text
+            Width: =455
+            X: =0
+            Y: =2
+            ZIndex: =1
+
+            DataCardKey8 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue8.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue8 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey8.X + DataCardKey8.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage8 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue8.Y + DataCardValue8.Height
+                ZIndex: =3
+
+            StarVisible8 As label:
+                Align: =Align.Center
+                Height: =DataCardKey8.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey8.Y
+                ZIndex: =4
+
+        DataCard2 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =_brandColor.MainBlue
+            Height: =41
+            Width: =1365
+            X: =0
+            Y: =4
+            ZIndex: =1
+
+            Label2_1 As label:
+                Color: =RGBA(255, 255, 255, 1)
+                FontWeight: =FontWeight.Semibold
+                Size: =15
+                Text: ="技术要求"
+                Width: =1365
+                ZIndex: =2
+
+        产品类别_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x4ea7__x54c1__x7c7b__x522b_"
+            Default: =ThisItem.产品类别
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x4ea7__x54c1__x7c7b__x522b_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =true
+            Update: =DataCardValue18.Selected
+            Width: =455
+            X: =0
+            Y: =5
+            ZIndex: =1
+
+            DataCardKey18 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue18.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue18 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                IsSearchable: =false
+                Items: |-
+                    =Switch(
+                        DataCardValue5.Selected.Value,
+                        "新建",
+                        [
+                            "",
+                            "吸干机",
+                            "冷干机",
+                            "过滤器",
+                            "制氮机",
+                            "附属设备"
+                        ],
+                        "扩产",
+                        [
+                            "",
+                            "吸干机",
+                            "冷干机",
+                            "过滤器",
+                            "制氮机",
+                            "附属设备"
+                        ],
+                        "替换",
+                        [
+                            "",
+                            "吸干机",
+                            "冷干机",
+                            "过滤器",
+                            "制氮机",
+                            "附属设备"
+                        ],
+                        "改造（CTS）",
+                        [
+                            "",
+                            "干燥机节能改造ER Upgrading（CTS）",
+                            "电气箱改造",
+                            "露点控制（CTS）"
+                        ],
+                        "AIRnet（CTS）",
+                        [
+                            "",
+                            "AIRnet（CTS）"
+                        ],
+                        "备件（CTS）",
+                        [
+                            "",
+                            "备件（CTS）"
+                        ],
+                        "热能回收ER（CTS）",
+                        [
+                            "",
+                            "热能回收ER（CTS）"
+                        ],
+                        "集中控制（CTS）",
+                        [
+                            "",
+                            "集中控制（CTS）"
+                        ]
+                    )
+                OnChange: |-
+                    =If(
+                        DataCardValue18.Selected.Value = "过滤器",
+                        ClearCollect(
+                            filterPrd,
+                            {
+                                Title: "初级除尘过滤器",
+                                category: "",
+                                accuracy: "",
+                                amount: "",
+                                Comment: ""
+                            },
+                            {
+                                Title: "精密除尘过滤器",
+                                category: "",
+                                accuracy: "",
+                                amount: "",
+                                Comment: ""
+                            },
+                            {
+                                Title: "初级除油过滤器",
+                                category: "",
+                                accuracy: "",
+                                amount: "",
+                                Comment: ""
+                            },
+                            {
+                                Title: "精密除油过滤器",
+                                category: "",
+                                accuracy: "",
+                                amount: "",
+                                Comment: ""
+                            },
+                            {
+                                Title: "活性炭过滤器",
+                                category: "",
+                                accuracy: "",
+                                amount: "",
+                                Comment: ""
+                            }
+                        )
+                    )
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =[]
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey18.X + DataCardKey18.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage18 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue18.Y + DataCardValue18.Height
+                ZIndex: =3
+
+            StarVisible18 As label:
+                Align: =Align.Center
+                Height: =DataCardKey18.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey18.Y
+                ZIndex: =4
+
+        产品型号_DataCard2 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x4ea7__x54c1__x578b__x53f7_"
+            Default: =If(Not(DataCardValue18.Selected.Value = "过滤器"),ThisItem.产品型号,locCate)
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x4ea7__x54c1__x578b__x53f7_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x4ea7__x54c1__x578b__x53f7_")
+            Required: =Not(DataCardValue18.Selected.Value = "过滤器")
+            Update: =DataCardValue6.Text
+            Visible: =Not(DataCardValue18.Selected.Value = "过滤器")
+            Width: =455
+            X: =1
+            Y: =5
+            ZIndex: =1
+
+            DataCardKey6 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue6.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue6 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey6.X + DataCardKey6.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage6 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue6.Y + DataCardValue6.Height
+                ZIndex: =3
+
+            StarVisible6 As label:
+                Align: =Align.Center
+                Height: =DataCardKey6.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey6.Y
+                ZIndex: =4
+
+        DataCard3 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =44
+            Visible: =DataCardValue18.Selected.Value = "AIRnet（CTS）"
+            Width: =455
+            X: =1
+            Y: =7
+            ZIndex: =1
+
+            Label4 As label:
+                Text: ="备注：需附上CAD版本管道布局图"
+                Width: =389
+                X: =30
+                ZIndex: =1
+
+        空压机品牌_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x7a7a__x538b__x673a__x54c1__x72"
+            Default: =ThisItem.空压机品牌
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x7a7a__x538b__x673a__x54c1__x72")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x7a7a__x538b__x673a__x54c1__x72")
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =DataCardValue57.Text
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =2
+            Y: =7
+            ZIndex: =1
+
+            DataCardKey57 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue57.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue57 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey57.X + DataCardKey57.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage57 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue57.Y + DataCardValue57.Height
+                ZIndex: =3
+
+            StarVisible57 As label:
+                Align: =Align.Center
+                Height: =DataCardKey57.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey57.Y
+                ZIndex: =4
+
+        "'能量回收进水温度（℃）_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x80fd__x91cf__x56de__x6536__x8f"
+            Default: =ThisItem.能量回收进水温度
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x80fd__x91cf__x56de__x6536__x8f")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =Value(DataCardValue62.Text)
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =1
+            Y: =8
+            ZIndex: =1
+
+            DataCardKey62 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue62.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue62 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey62.X + DataCardKey62.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage62 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue62.Y + DataCardValue62.Height
+                ZIndex: =3
+
+            StarVisible62 As label:
+                Align: =Align.Center
+                Height: =DataCardKey62.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey62.Y
+                ZIndex: =4
+
+        "'热水使用温度（℃）_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x70ed__x6c34__x4f7f__x7528__x6e"
+            Default: =ThisItem.热水使用温度
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x70ed__x6c34__x4f7f__x7528__x6e")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =Value(DataCardValue63.Text)
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =0
+            Y: =9
+            ZIndex: =1
+
+            DataCardKey63 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue63.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue63 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey63.X + DataCardKey63.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage63 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue63.Y + DataCardValue63.Height
+                ZIndex: =3
+
+            StarVisible63 As label:
+                Align: =Align.Center
+                Height: =DataCardKey63.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey63.Y
+                ZIndex: =4
+
+        热水用途_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x70ed__x6c34__x7528__x9014_"
+            Default: =ThisItem.热水用途
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x70ed__x6c34__x7528__x9014_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x70ed__x6c34__x7528__x9014_")
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =DataCardValue64.Text
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =1
+            Y: =9
+            ZIndex: =1
+
+            DataCardKey64 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue64.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue64 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey64.X + DataCardKey64.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage64 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue64.Y + DataCardValue64.Height
+                ZIndex: =3
+
+            StarVisible64 As label:
+                Align: =Align.Center
+                Height: =DataCardKey64.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey64.Y
+                ZIndex: =4
+
+        环境温度_DataCard1 As typedDataCard.numberEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x73af__x5883__x6e29__x5ea6_"
+            Default: =ThisItem.环境温度
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x73af__x5883__x6e29__x5ea6_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =Value(DataCardValue35.Text)
+            Visible: =DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =0
+            Y: =10
+            ZIndex: =1
+
+            DataCardKey35 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue35.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue35 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey35.X + DataCardKey35.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage35 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue35.Y + DataCardValue35.Height
+                ZIndex: =3
+
+            StarVisible35 As label:
+                Align: =Align.Center
+                Height: =DataCardKey35.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey35.Y
+                ZIndex: =4
+
+        "'氮气纯度（%）_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x6c2e__x6c14__x7eaf__x5ea6__xff"
+            Default: =ThisItem.'氮气纯度（%）'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x6c2e__x6c14__x7eaf__x5ea6__xff")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "制氮机"
+            Update: =Value(DataCardValue40.Text)
+            Visible: =DataCardValue18.Selected.Value = "制氮机"
+            Width: =455
+            X: =1
+            Y: =10
+            ZIndex: =1
+
+            DataCardKey40 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue40.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue40 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey40.X + DataCardKey40.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage40 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue40.Y + DataCardValue40.Height
+                ZIndex: =3
+
+            StarVisible40 As label:
+                Align: =Align.Center
+                Height: =DataCardKey40.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey40.Y
+                ZIndex: =4
+
+        改造前机型_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x6539__x9020__x524d__x673a__x57"
+            Default: =ThisItem.改造前机型
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x6539__x9020__x524d__x673a__x57")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =DataCardValue46.Selected
+            Visible: =DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =2
+            Y: =10
+            ZIndex: =1
+
+            DataCardKey46 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue46.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue46 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: =Choices([@Exp_Quotation_main_list].改造前机型)
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =Choices(Exp_Quotation_main_list.改造前机型,DataCardValue46.SearchText)
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey46.X + DataCardKey46.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage46 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue46.Y + DataCardValue46.Height
+                ZIndex: =3
+
+            StarVisible46 As label:
+                Align: =Align.Center
+                Height: =DataCardKey46.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey46.Y
+                ZIndex: =4
+
+        空压机台数_DataCard1 As typedDataCard.numberEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x7a7a__x538b__x673a__x53f0__x65"
+            Default: =ThisItem.空压机台数
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x7a7a__x538b__x673a__x53f0__x65")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =Value(DataCardValue56.Text)
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =0
+            Y: =11
+            ZIndex: =1
+
+            DataCardKey56 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue56.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue56 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey56.X + DataCardKey56.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage56 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue56.Y + DataCardValue56.Height
+                ZIndex: =3
+
+            StarVisible56 As label:
+                Align: =Align.Center
+                Height: =DataCardKey56.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey56.Y
+                ZIndex: =4
+
+        空压机负载_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x7a7a__x538b__x673a__x8d1f__x8f"
+            Default: =ThisItem.空压机负载
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x7a7a__x538b__x673a__x8d1f__x8f")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x7a7a__x538b__x673a__x8d1f__x8f")
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =DataCardValue59.Text
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =1
+            Y: =11
+            ZIndex: =1
+
+            DataCardKey59 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue59.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue59 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey59.X + DataCardKey59.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage59 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue59.Y + DataCardValue59.Height
+                ZIndex: =3
+
+            StarVisible59 As label:
+                Align: =Align.Center
+                Height: =DataCardKey59.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey59.Y
+                ZIndex: =4
+
+        "'总气量（m3/min)_DataCard1' As typedDataCard.textualEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x603b__x6c14__x91cf__xff08_m3_x"
+            Default: =ThisItem.'总气量（m3/min)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x603b__x6c14__x91cf__xff08_m3_x")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x603b__x6c14__x91cf__xff08_m3_x")
+            Required: =DataCardValue18.Selected.Value = "AIRnet（CTS）"
+            Update: =DataCardValue53.Text
+            Visible: =DataCardValue18.Selected.Value = "AIRnet（CTS）"
+            Width: =455
+            X: =2
+            Y: =11
+            ZIndex: =1
+
+            DataCardKey53 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue53.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue53 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey53.X + DataCardKey53.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage53 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue53.Y + DataCardValue53.Height
+                ZIndex: =3
+
+            StarVisible53 As label:
+                Align: =Align.Center
+                Height: =DataCardKey53.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey53.Y
+                ZIndex: =4
+
+        机型_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x673a__x578b_"
+            Default: =ThisItem.机型
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x673a__x578b_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x673a__x578b_")
+            Required: =false
+            Update: =DataCardValue48.Text
+            Visible: =DataCardValue18.Selected.Value = "电气箱改造" || DataCardValue18.Selected.Value = "露点控制（CTS）"
+            Width: =455
+            X: =0
+            Y: =12
+            ZIndex: =1
+
+            DataCardKey48 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue48.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue48 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey48.X + DataCardKey48.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage48 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue48.Y + DataCardValue48.Height
+                ZIndex: =3
+
+            StarVisible48 As label:
+                Align: =Align.Center
+                Height: =DataCardKey48.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey48.Y
+                ZIndex: =4
+
+        "'功率（KW)_DataCard1' As typedDataCard.textualEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x529f__x7387__xff08_KW_x0029_"
+            Default: =ThisItem.'功率（KW)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x529f__x7387__xff08_KW_x0029_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x529f__x7387__xff08_KW_x0029_")
+            Required: =false
+            Update: =DataCardValue50.Text
+            Visible: =DataCardValue18.Selected.Value = "露点控制（CTS）"
+            Width: =455
+            X: =1
+            Y: =12
+            ZIndex: =1
+
+            DataCardKey50 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue50.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue50 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey50.X + DataCardKey50.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage50 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue50.Y + DataCardValue50.Height
+                ZIndex: =3
+
+            StarVisible50 As label:
+                Align: =Align.Center
+                Height: =DataCardKey50.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey50.Y
+                ZIndex: =4
+
+        "'工作压力(Mpa)_DataCard1' As typedDataCard.textualEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x5de5__x4f5c__x538b__x529b__x00"
+            Default: =ThisItem.'工作压力(Mpa)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x5de5__x4f5c__x538b__x529b__x00")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x5de5__x4f5c__x538b__x529b__x00")
+            Required: =DataCardValue18.Selected.Value = "AIRnet（CTS）"
+            Update: =DataCardValue54.Text
+            Visible: =DataCardValue18.Selected.Value = "AIRnet（CTS）"
+            Width: =455
+            X: =2
+            Y: =12
+            ZIndex: =1
+
+            DataCardKey54 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue54.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue54 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey54.X + DataCardKey54.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage54 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue54.Y + DataCardValue54.Height
+                ZIndex: =3
+
+            StarVisible54 As label:
+                Align: =Align.Center
+                Height: =DataCardKey54.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey54.Y
+                ZIndex: =4
+
+        "'产氮量(Nm3/h)_DataCard1' As typedDataCard.textualEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x4ea7__x6c2e__x91cf__x0028_Nm3_"
+            Default: =ThisItem.'产氮量(Nm3/h)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x4ea7__x6c2e__x91cf__x0028_Nm3_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x4ea7__x6c2e__x91cf__x0028_Nm3_")
+            Required: =DataCardValue18.Selected.Value = "制氮机"
+            Update: =DataCardValue42.Text
+            Visible: =DataCardValue18.Selected.Value = "制氮机"
+            Width: =455
+            X: =0
+            Y: =13
+            ZIndex: =1
+
+            DataCardKey42 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue42.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue42 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey42.X + DataCardKey42.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage42 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue42.Y + DataCardValue42.Height
+                ZIndex: =3
+
+            StarVisible42 As label:
+                Align: =Align.Center
+                Height: =DataCardKey42.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey42.Y
+                ZIndex: =4
+
+        控制方式_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x63a7__x5236__x65b9__x5f0f_"
+            Default: =ThisItem.控制方式
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x63a7__x5236__x65b9__x5f0f_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x63a7__x5236__x65b9__x5f0f_")
+            Required: =false
+            Update: =DataCardValue49.Text
+            Visible: =DataCardValue18.Selected.Value = "电气箱改造"
+            Width: =455
+            X: =1
+            Y: =13
+            ZIndex: =1
+
+            DataCardKey49 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue49.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue49 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey49.X + DataCardKey49.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage49 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue49.Y + DataCardValue49.Height
+                ZIndex: =3
+
+            StarVisible49 As label:
+                Align: =Align.Center
+                Height: =DataCardKey49.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey49.Y
+                ZIndex: =4
+
+        空压机功率_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x7a7a__x538b__x673a__x529f__x73"
+            Default: =ThisItem.空压机功率
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x7a7a__x538b__x673a__x529f__x73")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x7a7a__x538b__x673a__x529f__x73")
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =DataCardValue58.Text
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =2
+            Y: =13
+            ZIndex: =1
+
+            DataCardKey58 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue58.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue58 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey58.X + DataCardKey58.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage58 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue58.Y + DataCardValue58.Height
+                ZIndex: =3
+
+            StarVisible58 As label:
+                Align: =Align.Center
+                Height: =DataCardKey58.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey58.Y
+                ZIndex: =4
+
+        空压机回收级数_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x7a7a__x538b__x673a__x56de__x65"
+            Default: =ThisItem.空压机回收级数
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x7a7a__x538b__x673a__x56de__x65")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x7a7a__x538b__x673a__x56de__x65")
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =DataCardValue60.Text
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =0
+            Y: =14
+            ZIndex: =1
+
+            DataCardKey60 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue60.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue60 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey60.X + DataCardKey60.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage60 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue60.Y + DataCardValue60.Height
+                ZIndex: =3
+
+            StarVisible60 As label:
+                Align: =Align.Center
+                Height: =DataCardKey60.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey60.Y
+                ZIndex: =4
+
+        改造后机型_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x6539__x9020__x540e__x673a__x57"
+            Default: =ThisItem.改造后机型
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x6539__x9020__x540e__x673a__x57")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =DataCardValue47.Selected
+            Visible: =DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =1
+            Y: =14
+            ZIndex: =1
+
+            DataCardKey47 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue47.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue47 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: |-
+                    =Switch(
+                        DataCardValue46.Selected.Value,
+                        "无热",
+                        [
+                            "",
+                            "微热",
+                            "鼓风热再生",
+                            "鼓风零气耗",
+                            "压缩热再生",
+                            "压缩热零气耗"
+                        ],
+                        "微热",
+                        [
+                            "",
+                            "鼓风热再生",
+                            "鼓风零气耗",
+                            "压缩热再生",
+                            "压缩热零气耗"
+                        ],
+                        "鼓风热再生",
+                        [
+                            "",
+                            "鼓风零气耗"
+                        ],
+                        "压缩热再生",
+                        [
+                            "",
+                            "压缩热零气耗"
+                        ],
+                        "压缩热再生",
+                        [
+                            "",
+                            "提升露点"
+                        ],
+                        "其他",
+                        [
+                            "",
+                            "请写入求他要求"
+                        ]
+                    )
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: |-
+                    =Search(Switch(
+                        DataCardValue46.Selected.Value,
+                        "无热",
+                        [
+                            "",
+                            "微热",
+                            "鼓风热再生",
+                            "鼓风零气耗",
+                            "压缩热再生",
+                            "压缩热零气耗"
+                        ],
+                        "微热",
+                        [
+                            "",
+                            "鼓风热再生",
+                            "鼓风零气耗",
+                            "压缩热再生",
+                            "压缩热零气耗"
+                        ],
+                        "鼓风热再生",
+                        [
+                            "",
+                            "鼓风零气耗"
+                        ],
+                        "压缩热再生",
+                        [
+                            "",
+                            "压缩热零气耗"
+                        ],
+                        "压缩热再生",
+                        [
+                            "",
+                            "提升露点"
+                        ],
+                        "其他",
+                        [
+                            "",
+                            "请写入求他要求"
+                        ]
+                    ),DataCardValue47.SearchText,"Value")
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey47.X + DataCardKey47.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage47 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue47.Y + DataCardValue47.Height
+                ZIndex: =3
+
+            StarVisible47 As label:
+                Align: =Align.Center
+                Height: =DataCardKey47.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey47.Y
+                ZIndex: =4
+
+        其它配置_DataCard2 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x5176__x5b83__x914d__x7f6e_"
+            Default: =ThisItem.其它配置
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x5176__x5b83__x914d__x7f6e_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =DataCardValue94.Selected
+            Visible: =DataCardValue18.Selected.Value = "露点控制（CTS）"
+            Width: =455
+            X: =2
+            Y: =14
+            ZIndex: =1
+
+            DataCardKey94 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue94.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue94 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: =Choices([@Exp_Quotation_main_list].其它配置)
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =Choices(Exp_Quotation_main_list.其它配置,DataCardValue94.SearchText)
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey94.X + DataCardKey94.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage94 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue94.Y + DataCardValue94.Height
+                ZIndex: =3
+
+            StarVisible94 As label:
+                Align: =Align.Center
+                Height: =DataCardKey94.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey94.Y
+                ZIndex: =4
+
+        零件种类_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x96f6__x4ef6__x79cd__x7c7b_"
+            Default: =ThisItem.零件种类
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x96f6__x4ef6__x79cd__x7c7b_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "备件（CTS）"
+            Update: =DataCardValue52.Selected
+            Visible: =DataCardValue18.Selected.Value = "备件（CTS）"
+            Width: =455
+            X: =0
+            Y: =15
+            ZIndex: =1
+
+            DataCardKey52 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue52.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue52 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: =Choices([@Exp_Quotation_main_list].零件种类)
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =Choices(Exp_Quotation_main_list.零件种类,DataCardValue52.SearchText)
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey52.X + DataCardKey52.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage52 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue52.Y + DataCardValue52.Height
+                ZIndex: =3
+
+            StarVisible52 As label:
+                Align: =Align.Center
+                Height: =DataCardKey52.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey52.Y
+                ZIndex: =4
+
+        冷却方式_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x51b7__x5374__x65b9__x5f0f_"
+            Default: =ThisItem.冷却方式
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x51b7__x5374__x65b9__x5f0f_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =DataCardValue61.Selected
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =1
+            Y: =15
+            ZIndex: =1
+
+            DataCardKey61 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue61.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue61 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: =Choices([@Exp_Quotation_main_list].冷却方式)
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =Choices(Exp_Quotation_main_list.冷却方式,DataCardValue61.SearchText)
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey61.X + DataCardKey61.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage61 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue61.Y + DataCardValue61.Height
+                ZIndex: =3
+
+            StarVisible61 As label:
+                Align: =Align.Center
+                Height: =DataCardKey61.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey61.Y
+                ZIndex: =4
+
+        空压机类型_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x7a7a__x538b__x673a__x7c7b__x57"
+            Default: =ThisItem.空压机类型
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x7a7a__x538b__x673a__x7c7b__x57")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Update: =DataCardValue55.Selected
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =2
+            Y: =15
+            ZIndex: =1
+
+            DataCardKey55 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue55.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue55 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: =Choices([@Exp_Quotation_main_list].空压机类型)
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =Choices(Exp_Quotation_main_list.空压机类型,DataCardValue55.SearchText)
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey55.X + DataCardKey55.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage55 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue55.Y + DataCardValue55.Height
+                ZIndex: =3
+
+            StarVisible55 As label:
+                Align: =Align.Center
+                Height: =DataCardKey55.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey55.Y
+                ZIndex: =4
+
+        DataCard7 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =9
+            Visible: =DataCardValue18.Selected.Value = "热能回收ER（CTS）" 
+            Width: =455
+            X: =0
+            Y: =16
+            ZIndex: =1
+
+            Label13 As label:
+                Text: ="备注：空压机种参数涉及多种，用“/”分开"
+                Width: =415
+                Y: =20
+                ZIndex: =1
+
+        DataCard9 As typedDataCard.blankCard:
+            BorderStyle: =BorderStyle.Solid
+            DisplayMode: =DisplayMode.Edit
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =189
+            Visible: =DataCardValue18.Selected.Value = "过滤器"
+            Width: =1365
+            X: =0
+            Y: =17
+            ZIndex: =1
+
+            "Gallery3 As gallery.'BrowseLayout_Vertical_TwoTextVariant_ver4.0'":
+                BorderThickness: =1
+                Height: =190
+                Items: |-
+                    =If(
+                        currReq.产品类别.Value = "过滤器",
+                        filterList,
+                        filterPrd
+                    )
+                Layout: =Layout.Vertical
+                TemplatePadding: =0
+                TemplateSize: =38
+                Width: =1339
+                ZIndex: =1
+
+                Title4 As label:
+                    FontWeight: =FontWeight.Normal
+                    Height: =27
+                    OnSelect: =Select(Parent)
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Size: =13
+                    Text: =ThisItem.Title
+                    VerticalAlign: =VerticalAlign.Top
+                    Width: =156
+                    X: =15
+                    Y: =8
+                    ZIndex: =1
+
+                Separator4 As rectangle:
+                    Height: =1
+                    OnSelect: =Select(Parent)
+                    Width: =Parent.TemplateWidth
+                    Y: =Parent.TemplateHeight - 1
+                    ZIndex: =4
+
+                Title4_1 As label:
+                    FontWeight: =FontWeight.Normal
+                    Height: =28
+                    OnSelect: =Select(Parent)
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Size: =13
+                    Text: ="型号："
+                    VerticalAlign: =VerticalAlign.Top
+                    Width: =58
+                    X: =171
+                    Y: =6
+                    ZIndex: =5
+
+                TextInput_cat As text:
+                    Default: =ThisItem.category
+                    Height: =28
+                    OnChange: |-
+                        =If(
+                            currReq.产品类别.Value = "过滤器",
+                            Patch(
+                                filterList,
+                                ThisItem,
+                                {category: TextInput_cat.Text}
+                            ),
+                            Patch(
+                                filterPrd,
+                                ThisItem,
+                                {category: TextInput_cat.Text}
+                            )
+                        );
+                        UpdateContext({locCate:TextInput_cat.Text})
+                    OnSelect: =Select(Parent)
+                    PaddingLeft: =5
+                    Width: =329
+                    X: =217
+                    Y: =6
+                    ZIndex: =6
+
+                Title4_2 As label:
+                    FontWeight: =FontWeight.Normal
+                    Height: =28
+                    OnSelect: =Select(Parent)
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Size: =13
+                    Text: ="精度："
+                    VerticalAlign: =VerticalAlign.Top
+                    Width: =58
+                    X: =575
+                    Y: =10
+                    ZIndex: =7
+
+                TextInput_acc As text:
+                    Default: =ThisItem.accuracy
+                    Height: =28
+                    OnChange: |-
+                        =If(
+                            currReq.产品类别.Value = "过滤器",
+                            Patch(
+                                filterList,
+                                ThisItem,
+                                {accuracy: TextInput_acc.Text}
+                            ),
+                            Patch(
+                                filterPrd,
+                                ThisItem,
+                                {accuracy: TextInput_acc.Text}
+                            )
+                        )
+                    OnSelect: =Select(Parent)
+                    PaddingLeft: =5
+                    Width: =189
+                    X: =631
+                    Y: =8
+                    ZIndex: =8
+
+                Title4_3 As label:
+                    FontWeight: =FontWeight.Normal
+                    Height: =28
+                    OnSelect: =Select(Parent)
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Size: =13
+                    Text: ="数量："
+                    VerticalAlign: =VerticalAlign.Top
+                    Width: =58
+                    X: =835
+                    Y: =8
+                    ZIndex: =9
+
+                TextInput_amt As text:
+                    Default: =ThisItem.amount
+                    Height: =28
+                    OnChange: |-
+                        =If(
+                            currReq.产品类别.Value = "过滤器",
+                            Patch(
+                                filterList,
+                                ThisItem,
+                                {amount: TextInput_amt.Text}
+                            ),
+                            Patch(
+                                filterPrd,
+                                ThisItem,
+                                {amount: TextInput_amt.Text}
+                            )
+                        )
+                    OnSelect: =Select(Parent)
+                    PaddingLeft: =5
+                    Width: =79
+                    X: =880
+                    Y: =6
+                    ZIndex: =10
+
+                Title4_4 As label:
+                    FontWeight: =FontWeight.Normal
+                    Height: =28
+                    OnSelect: =Select(Parent)
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Size: =13
+                    Text: ="其他："
+                    VerticalAlign: =VerticalAlign.Top
+                    Width: =58
+                    X: =979
+                    Y: =8
+                    ZIndex: =11
+
+                TextInput_comment As text:
+                    Default: =ThisItem.Comment
+                    Height: =28
+                    OnChange: |-
+                        =If(
+                            currReq.产品类别.Value = "过滤器",
+                            Patch(
+                                filterList,
+                                ThisItem,
+                                {Comment: TextInput_comment.Text}
+                            ),
+                            Patch(
+                                filterPrd,
+                                ThisItem,
+                                {Comment: TextInput_comment.Text}
+                            )
+                        )
+                    OnSelect: =Select(Parent)
+                    PaddingLeft: =5
+                    Width: =304
+                    X: =1024
+                    Y: =6
+                    ZIndex: =12
+
+        流程状态_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x6d41__x7a0b__x72b6__x6001_"
+            Default: =RequestStage1
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x6d41__x7a0b__x72b6__x6001_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x6d41__x7a0b__x72b6__x6001_")
+            Required: =false
+            Update: =DataCardValue19.Text
+            Visible: =false
+            Width: =455
+            X: =2
+            Y: =18
+            ZIndex: =1
+
+            DataCardKey19 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue19.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue19 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey19.X + DataCardKey19.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage19 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue19.Y + DataCardValue19.Height
+                ZIndex: =3
+
+            StarVisible19 As label:
+                Align: =Align.Center
+                Height: =DataCardKey19.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey19.Y
+                ZIndex: =4
+
+        PendingOn_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="PendingOn"
+            Default: =LookUp(Exp_Quotation_User_Roles,销售邮箱=User().Email).产品专员邮箱
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"PendingOn")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "PendingOn")
+            Required: =false
+            Update: =DataCardValue20.Text
+            Visible: =false
+            Width: =455
+            X: =0
+            Y: =19
+            ZIndex: =1
+
+            DataCardKey20 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue20.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue20 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey20.X + DataCardKey20.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage20 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue20.Y + DataCardValue20.Height
+                ZIndex: =3
+
+            StarVisible20 As label:
+                Align: =Align.Center
+                Height: =DataCardKey20.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey20.Y
+                ZIndex: =4
+
+        isReturn_DataCard1 As typedDataCard.toggleEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="isReturn"
+            Default: =false
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"isReturn")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =DataCardValue28.Value
+            Visible: =false
+            Width: =455
+            X: =1
+            Y: =19
+            ZIndex: =1
+
+            DataCardKey28 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue28.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue28 As toggleSwitch:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DisplayMode: =Parent.DisplayMode
+                Tooltip: =Parent.DisplayName
+                X: =Parent.Width  - Self.Width - 30
+                Y: =12
+                ZIndex: =2
+
+            ErrorMessage28 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue28.Y + DataCardValue28.Height
+                ZIndex: =3
+
+            StarVisible28 As label:
+                Align: =Align.Center
+                Height: =DataCardKey28.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey28.Y
+                ZIndex: =4
+
+        isReturn_DataCard2 As typedDataCard.toggleEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="isReturn"
+            Default: =false
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"isReturn")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =DataCardValue51.Value
+            Visible: =false
+            Width: =455
+            X: =2
+            Y: =19
+            ZIndex: =1
+
+            DataCardKey51 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue51.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue51 As toggleSwitch:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DisplayMode: =Parent.DisplayMode
+                Tooltip: =Parent.DisplayName
+                X: =Parent.Width  - Self.Width - 30
+                Y: =12
+                ZIndex: =2
+
+            ErrorMessage51 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue51.Y + DataCardValue51.Height
+                ZIndex: =3
+
+            StarVisible51 As label:
+                Align: =Align.Center
+                Height: =DataCardKey51.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey51.Y
+                ZIndex: =4
+
+        销售团队_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x9500__x552e__x56e2__x961f_"
+            Default: =If(IsBlank(ThisItem.销售团队),LookUp(Sales,Mail=User().Email).销售团队,ThisItem.销售团队)
+            DisplayMode: =DisplayMode.View
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x9500__x552e__x56e2__x961f_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x9500__x552e__x56e2__x961f_")
+            Required: =false
+            Update: =DataCardValue2.Text
+            Width: =455
+            X: =1
+            Y: =0
+            ZIndex: =3
+
+            DataCardKey2 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue2.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue2 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey2.X + DataCardKey2.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage2 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue2.Y + DataCardValue2.Height
+                ZIndex: =3
+
+            StarVisible2 As label:
+                Align: =Align.Center
+                Height: =DataCardKey2.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey2.Y
+                ZIndex: =4
+
+        最终客户名称_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x6700__x7ec8__x5ba2__x6237__x54"
+            Default: =If(sameProj,gly_main_list.Selected.最终客户名称,ThisItem.最终客户名称)
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x6700__x7ec8__x5ba2__x6237__x54")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x6700__x7ec8__x5ba2__x6237__x54")
+            Required: =false
+            Update: =DataCardValue3.Text
+            Width: =455
+            X: =1
+            Y: =2
+            ZIndex: =3
+
+            DataCardKey3 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue3.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue3 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey3.X + DataCardKey3.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage3 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue3.Y + DataCardValue3.Height
+                ZIndex: =3
+
+            StarVisible3 As label:
+                Align: =Align.Center
+                Height: =DataCardKey3.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey3.Y
+                ZIndex: =4
+
+        所处行业_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x6240__x5904__x884c__x4e1a_"
+            Default: =If(sameProj,gly_main_list.Selected.所处行业,ThisItem.所处行业)
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x6240__x5904__x884c__x4e1a_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =true
+            Update: =DataCardValue4.Selected
+            Width: =455
+            X: =2
+            Y: =2
+            ZIndex: =3
+
+            DataCardKey4 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue4.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue4 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: =Choices([@Exp_Quotation_main_list].所处行业)
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =Choices(Exp_Quotation_main_list.所处行业,DataCardValue4.SearchText)
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey4.X + DataCardKey4.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage4 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue4.Y + DataCardValue4.Height
+                ZIndex: =3
+
+            StarVisible4 As label:
+                Align: =Align.Center
+                Height: =DataCardKey4.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey4.Y
+                ZIndex: =4
+
+        项目类型_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x9879__x76ee__x7c7b__x578b_"
+            Default: =If(sameProj,gly_main_list.Selected.项目类型,ThisItem.项目类型)
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x9879__x76ee__x7c7b__x578b_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =true
+            Update: =DataCardValue5.Selected
+            Width: =455
+            X: =0
+            Y: =3
+            ZIndex: =3
+
+            DataCardKey5 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue5.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue5 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: =Choices([@Exp_Quotation_main_list].项目类型)
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =Choices(Exp_Quotation_main_list.项目类型,DataCardValue5.SearchText)
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey5.X + DataCardKey5.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage5 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue5.Y + DataCardValue5.Height
+                ZIndex: =3
+
+            StarVisible5 As label:
+                Align: =Align.Center
+                Height: =DataCardKey5.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey5.Y
+                ZIndex: =4
+
+        C4C商机编号_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="C4C_x5546__x673a__x7f16__x53f7_"
+            Default: =If(sameProj,gly_main_list.Selected.C4C商机编号,ThisItem.C4C商机编号)
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"C4C_x5546__x673a__x7f16__x53f7_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "C4C_x5546__x673a__x7f16__x53f7_")
+            Required: =true
+            Update: =DataCardValue7.Text
+            Width: =455
+            X: =1
+            Y: =3
+            ZIndex: =3
+
+            DataCardKey7 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue7.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue7 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey7.X + DataCardKey7.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage7 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue7.Y + DataCardValue7.Height
+                ZIndex: =3
+
+            StarVisible7 As label:
+                Align: =Align.Center
+                Height: =DataCardKey7.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey7.Y
+                ZIndex: =4
+
+        Title_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="Title"
+            Default: =If(sameProj,gly_main_list.Selected.Title,Text(Now(),"yymmddhhmm"))
+            DisplayMode: =DisplayMode.View
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"Title")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "Title")
+            Required: =true
+            Update: =DataCardValue1.Text
+            Width: =455
+            X: =2
+            Y: =3
+            ZIndex: =3
+
+            DataCardKey1 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: ="申请编号"
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue1.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue1 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey1.X + DataCardKey1.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage1 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue1.Y + DataCardValue1.Height
+                ZIndex: =3
+
+            StarVisible1 As label:
+                Align: =Align.Center
+                Height: =DataCardKey1.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey1.Y
+                ZIndex: =4
+
+        "'数量(台)_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x6570__x91cf__x0028__x53f0__x00"
+            Default: =ThisItem.'数量(台)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x6570__x91cf__x0028__x53f0__x00")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "吸干机" || DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）" || DataCardValue18.Selected.Value = "电气箱改造" || DataCardValue18.Selected.Value = "露点控制（CTS）"
+            Update: =Value(DataCardValue9.Text)
+            Visible: =DataCardValue18.Selected.Value = "吸干机" || DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）" || DataCardValue18.Selected.Value = "电气箱改造" || DataCardValue18.Selected.Value = "露点控制（CTS）"
+            Width: =455
+            X: =2
+            Y: =5
+            ZIndex: =3
+
+            DataCardKey9 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue9.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue9 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey9.X + DataCardKey9.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage9 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue9.Y + DataCardValue9.Height
+                ZIndex: =3
+
+            StarVisible9 As label:
+                Align: =Align.Center
+                Height: =DataCardKey9.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey9.Y
+                ZIndex: =4
+
+        单台处理气量_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x5355__x53f0__x5904__x7406__x6c"
+            Default: =ThisItem.单台处理气量
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x5355__x53f0__x5904__x7406__x6c")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x5355__x53f0__x5904__x7406__x6c")
+            Required: =DataCardValue18.Selected.Value = "吸干机" || DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "过滤器" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）" || DataCardValue18.Selected.Value = "露点控制（CTS）"
+            Update: =DataCardValue10.Text
+            Visible: =DataCardValue18.Selected.Value = "吸干机" || DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "过滤器" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）" || DataCardValue18.Selected.Value = "露点控制（CTS）"
+            Width: =455
+            X: =0
+            Y: =6
+            ZIndex: =3
+
+            DataCardKey10 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue10.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue10 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey10.X + DataCardKey10.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage10 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue10.Y + DataCardValue10.Height
+                ZIndex: =3
+
+            StarVisible10 As label:
+                Align: =Align.Center
+                Height: =DataCardKey10.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey10.Y
+                ZIndex: =4
+
+        "'压力露点要求(℃)_DataCard1' As typedDataCard.textualEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x538b__x529b__x9732__x70b9__x89"
+            Default: =ThisItem.'压力露点要求(℃)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x538b__x529b__x9732__x70b9__x89")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x538b__x529b__x9732__x70b9__x89")
+            Required: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =DataCardValue11.Text
+            Visible: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =1
+            Y: =6
+            ZIndex: =3
+
+            DataCardKey11 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue11.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue11 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey11.X + DataCardKey11.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage11 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue11.Y + DataCardValue11.Height
+                ZIndex: =3
+
+            StarVisible11 As label:
+                Align: =Align.Center
+                Height: =DataCardKey11.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey11.Y
+                ZIndex: =4
+
+        "'进气压力(Mpa)_DataCard1' As typedDataCard.textualEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x8fdb__x6c14__x538b__x529b__x00"
+            Default: =ThisItem.'进气压力(Mpa)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x8fdb__x6c14__x538b__x529b__x00")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x8fdb__x6c14__x538b__x529b__x00")
+            Required: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "过滤器" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =DataCardValue12.Text
+            Visible: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "过滤器" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =2
+            Y: =6
+            ZIndex: =3
+
+            DataCardKey12 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue12.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue12 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey12.X + DataCardKey12.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage12 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue12.Y + DataCardValue12.Height
+                ZIndex: =3
+
+            StarVisible12 As label:
+                Align: =Align.Center
+                Height: =DataCardKey12.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey12.Y
+                ZIndex: =4
+
+        "'设计压力(Mpa)_DataCard1' As typedDataCard.textualEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x8bbe__x8ba1__x538b__x529b__x00"
+            Default: =ThisItem.'设计压力(Mpa)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x8bbe__x8ba1__x538b__x529b__x00")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x8bbe__x8ba1__x538b__x529b__x00")
+            Required: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "过滤器" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =DataCardValue13.Text
+            Visible: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "过滤器" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =0
+            Y: =7
+            ZIndex: =3
+
+            DataCardKey13 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue13.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue13 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey13.X + DataCardKey13.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage13 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue13.Y + DataCardValue13.Height
+                ZIndex: =3
+
+            StarVisible13 As label:
+                Align: =Align.Center
+                Height: =DataCardKey13.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey13.Y
+                ZIndex: =4
+
+        进气温度_DataCard1 As typedDataCard.textualEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x8fdb__x6c14__x6e29__x5ea6_"
+            Default: =ThisItem.进气温度
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x8fdb__x6c14__x6e29__x5ea6_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x8fdb__x6c14__x6e29__x5ea6_")
+            Required: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "过滤器" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =DataCardValue14.Text
+            Visible: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "制氮机" || DataCardValue18.Selected.Value = "附属设备" || DataCardValue18.Selected.Value = "过滤器" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =0
+            Y: =8
+            ZIndex: =3
+
+            DataCardKey14 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue14.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue14 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey14.X + DataCardKey14.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage14 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue14.Y + DataCardValue14.Height
+                ZIndex: =3
+
+            StarVisible14 As label:
+                Align: =Align.Center
+                Height: =DataCardKey14.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey14.Y
+                ZIndex: =4
+
+        "'冷却水温度(℃)_DataCard1' As typedDataCard.textualEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x51b7__x5374__x6c34__x6e29__x5e"
+            Default: =ThisItem.'冷却水温度(℃)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x51b7__x5374__x6c34__x6e29__x5e")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            MaxLength: =DataSourceInfo([@Exp_Quotation_main_list], DataSourceInfo.MaxLength, "OData__x51b7__x5374__x6c34__x6e29__x5e")
+            Required: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =DataCardValue15.Text
+            Visible: =DataCardValue18.Selected.Value = "吸干机"|| DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =2
+            Y: =8
+            ZIndex: =3
+
+            DataCardKey15 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue15.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue15 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                MaxLength: =Parent.MaxLength
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey15.X + DataCardKey15.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage15 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue15.Y + DataCardValue15.Height
+                ZIndex: =3
+
+            StarVisible15 As label:
+                Align: =Align.Center
+                Height: =DataCardKey15.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey15.Y
+                ZIndex: =4
+
+        工作介质_DataCard1 As typedDataCard.comboBoxEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x5de5__x4f5c__x4ecb__x8d28_"
+            Default: =ThisItem.工作介质
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x5de5__x4f5c__x4ecb__x8d28_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =DataCardValue18.Selected.Value = "吸干机" || DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Update: =DataCardValue16.Selected
+            Visible: =DataCardValue18.Selected.Value = "吸干机" || DataCardValue18.Selected.Value = "冷干机" || DataCardValue18.Selected.Value = "干燥机节能改造ER Upgrading（CTS）"
+            Width: =455
+            X: =2
+            Y: =9
+            ZIndex: =3
+
+            DataCardKey16 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue16.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue16 As combobox:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DefaultSelectedItems: =Parent.Default
+                DisplayFields: =["Value"]
+                DisplayMode: =Parent.DisplayMode
+                Items: =Choices([@Exp_Quotation_main_list].工作介质)
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                SearchFields: =["Value"]
+                SearchItems: =Choices(Exp_Quotation_main_list.工作介质,DataCardValue16.SearchText)
+                SelectMultiple: =false
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey16.X + DataCardKey16.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage16 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue16.Y + DataCardValue16.Height
+                ZIndex: =3
+
+            StarVisible16 As label:
+                Align: =Align.Center
+                Height: =DataCardKey16.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey16.Y
+                ZIndex: =4
+
+        Attachments_DataCard1 As typedDataCard.attachmentsEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="{Attachments}"
+            Default: =ThisItem.附件
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"{Attachments}")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =153
+            Required: =false
+            Update: =DataCardValue25.Attachments
+            Width: =910
+            X: =0
+            Y: =18
+            ZIndex: =3
+
+            DataCardKey25 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue25.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue25 As attachments:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                DisplayMode: =Parent.DisplayMode
+                Height: =123
+                IsInDataCard: =true
+                Items: =Parent.Default
+                PaddingBottom: =5
+                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                PaddingRight: =5
+                PaddingTop: =5
+                Tooltip: =Parent.DisplayName
+                Width: =690
+                X: =187
+                Y: =9
+                ZIndex: =2
+
+            ErrorMessage25 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue25.Y + DataCardValue25.Height
+                ZIndex: =3
+
+            StarVisible25 As label:
+                Align: =Align.Center
+                Height: =DataCardKey25.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey25.Y
+                ZIndex: =4
+
+    Icon4 As icon.Save:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =40
+        Icon: =Icon.Save
+        OnSelect: |-
+            =UpdateContext({showLoad:true});UpdateContext({isDraft:true});SubmitForm(Form_Ini);
+        Visible: =currReq.流程状态 = RequestStage10 || Form_Ini.Mode=FormMode.New
+        Width: =40
+        X: =1225
+        Y: =10
+        ZIndex: =3
+
+    Icon4_1 As icon.Save:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =40
+        Icon: =Icon.Send
+        OnSelect: |-
+            =Reset(cpn_confirm_comment_6);UpdateContext({showSubConfirm:true,comTitle:"确认提交"});
+        Visible: =currReq.流程状态 = RequestStage10 || Form_Ini.Mode=FormMode.New
+        Width: =40
+        X: =1305
+        Y: =10
+        ZIndex: =4
+
+    Icon4_2 As icon.Save:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =40
+        Icon: =Icon.CancelBadge
+        OnSelect: |-
+            =UpdateContext({showConfirm:true,comTitle:"确认取消",comContent:"取消提交，数据不保存"});
+        Visible: =currReq.流程状态 = RequestStage10 || Form_Ini.Mode=FormMode.New
+        Width: =40
+        X: =1145
+        Y: =10
+        ZIndex: =5
+
+    refresh_label_2 As label:
+        Align: =Align.Center
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =18
+        Size: =8
+        Text: ="提交"
+        Visible: =currReq.流程状态 = RequestStage10 || Form_Ini.Mode=FormMode.New
+        Width: =60
+        X: =1295
+        Y: =47
+        ZIndex: =6
+
+    refresh_label_3 As label:
+        Align: =Align.Center
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =18
+        Size: =8
+        Text: ="保存"
+        Visible: =currReq.流程状态 = RequestStage10 || Form_Ini.Mode=FormMode.New
+        Width: =60
+        X: =1215
+        Y: =47
+        ZIndex: =7
+
+    refresh_label_4 As label:
+        Align: =Align.Center
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =18
+        Size: =8
+        Text: ="取消"
+        Visible: =currReq.流程状态 = RequestStage10 || Form_Ini.Mode=FormMode.New
+        Width: =60
+        X: =1135
+        Y: =47
+        ZIndex: =8
+
+    Icon4_3 As icon.Save:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =40
+        Icon: =Icon.History
+        OnSelect: =Navigate(Screen_log)
+        Visible: =Form_Ini.Mode = FormMode.Edit
+        Width: =40
+        X: =1059
+        Y: =10
+        ZIndex: =9
+
+    refresh_label_5 As label:
+        Align: =Align.Center
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =18
+        Size: =8
+        Text: ="历史操作"
+        Visible: =Form_Ini.Mode = FormMode.Edit
+        Width: =60
+        X: =1049
+        Y: =47
+        ZIndex: =10
+
+    cpn_loading_1 As cpn_loading:
+        Visible: =showLoad
+        ZIndex: =11
+
+    cpn_confirm_1 As cpn_confirm:
+        Message: =comContent
+        OnClose: |-
+            =UpdateContext({showConfirm:false})
+        OnConfirm: |-
+            =UpdateContext({showConfirm:false});Remove(Exp_Quotation_main_list,currReq);Back()
+        Title: =comTitle
+        Visible: =showConfirm
+        ZIndex: =12
+
+    cpn_confirm_comment_6 As cpn_confirm_comment:
+        Message: =comTitle
+        OnClose: |-
+            =UpdateContext({showSubConfirm:false})
+        OnConfirm: |-
+            =UpdateContext({showLoad:true,showSubConfirm:false,isDraft:false});SubmitForm(Form_Ini);
+        Title: =comTitle
+        Visible: =showSubConfirm
+        ZIndex: =13
+

@@ -1,0 +1,761 @@
+Screen_home As screen:
+    OnVisible: |-
+        =Refresh(Exp_Quotation_main_list);
+        UpdateContext({showFilter: ""});
+        Reset(Input_项目名称);
+        Reset(Input_产品型号);
+        Reset(Input_合作伙伴);
+        Reset(Input_最终用户);
+        Reset(Input_销售);
+        Reset(Input_申请编号);
+        Reset(drp_是否赢单);
+        Reset(drp_流程状态);
+        Reset(drp_采购渠道);
+        Reset(dp_申请日期);
+        If(
+            isSalesRole,
+            ClearCollect(
+                mainList,
+                Filter(
+                    Exp_Quotation_main_list,
+                    'Created By'.Email = User().Email
+                )
+            ),
+            If(
+                IsBlank(userTeam),
+                ClearCollect(
+                    mainList,
+                    Exp_Quotation_main_list
+                ),
+                ClearCollect(
+                    mainList,
+                    Filter(
+                        Exp_Quotation_main_list,
+                        销售团队 = userTeam
+                    )
+                )
+            )
+        )
+
+    Label7_12 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: =""
+        Width: =1366
+        Y: =64
+        ZIndex: =1
+
+    cpn_header_2 As cpn_header:
+        ScreenTitle: ="非标询价系统"
+        ZIndex: =2
+
+    gly_main_list As gallery.galleryVertical:
+        Height: =664
+        Items: |
+            =Sort(mainList,Created,Descending)
+            /*
+                Sort(
+                    Filter(
+                        Exp_Quotation_main_list,
+                        'project name' = Input_项目名称.Text || IsBlank(Input_项目名称.Text),
+                        最终客户名称 = Input_最终用户.Text || IsBlank(Input_最终用户.Text),
+                //合作伙伴名称 = Input_合作伙伴.Text || IsBlank(Input_合作伙伴.Text),
+                        产品型号 = Input_产品型号.Text || IsBlank(Input_产品型号.Text),
+                        产品型号 = Input_产品型号.Text || IsBlank(Input_产品型号.Text),
+                        流程状态 = drp_流程状态.Selected.Value || IsBlank(drp_流程状态.Selected.Value),
+                        是否赢单.Value = drp_是否赢单.Selected.Value || IsBlank(drp_是否赢单.Selected.Value),
+                        采购渠道.Value = drp_采购渠道.Selected.Value || IsBlank(drp_采购渠道.Selected.Value),
+                        销售 = Input_销售.Text || IsBlank(Input_销售.Text),
+                        申请日期 = dp_申请日期.SelectedDate || IsBlank(dp_申请日期),
+                        Title = Input_申请编号.Text || IsBlank(Input_申请编号.Text),
+                        (isSalesRole && 'Created By'.Email = User().Email) || Not(isSalesRole)
+                             ),
+                    Created,Descending
+                )*/
+        Layout: =Layout.Vertical
+        OnSelect: |-
+            =UpdateContext({showFilter:""})
+        TemplateSize: =55
+        Width: =1366
+        Y: =104
+        ZIndex: =3
+
+        Label5 As label:
+            Align: =Align.Right
+            OnSelect: =Select(Parent)
+            Text: =Left(ThisItem.项目名称,8)
+            Y: =10
+            ZIndex: =1
+
+        Label5_1 As label:
+            Align: =Align.Right
+            OnSelect: =Select(Parent)
+            Text: =Left(ThisItem.最终客户名称,8)
+            Width: =183
+            X: =191
+            Y: =10
+            ZIndex: =2
+
+        Label5_3 As label:
+            Align: =Align.Right
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.产品型号
+            Width: =182
+            X: =388
+            Y: =10
+            ZIndex: =4
+
+        Label5_4 As label:
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.流程状态
+            Width: =101
+            X: =584
+            Y: =10
+            ZIndex: =5
+
+        Label5_5 As label:
+            Align: =Align.Right
+            OnSelect: =Select(Parent)
+            Text: =If(IsBlank(ThisItem.是否赢单),"待确定",ThisItem.是否赢单.Value)
+            Width: =82
+            X: =674
+            Y: =10
+            ZIndex: =6
+
+        Label5_6 As label:
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.采购渠道.Value
+            Visible: =IsBlank(LookUp(Exp_Quotation_User_Roles,销售邮箱 = User().Email))
+            Width: =74
+            X: =1282
+            Y: =10
+            ZIndex: =7
+
+        Label5_7 As label:
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.销售
+            Width: =104
+            X: =770
+            Y: =10
+            ZIndex: =8
+
+        Label5_8 As label:
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.申请日期
+            Width: =116
+            X: =874
+            Y: =10
+            ZIndex: =9
+
+        Label5_9 As label:
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.Title
+            Width: =112
+            X: =1036
+            Y: =10
+            ZIndex: =10
+
+        Label8 As label:
+            Fill: =_brandColor.LightGreyTint
+            Height: =2
+            OnSelect: =Select(Parent)
+            Text: =
+            Width: =1356
+            Y: =50
+            ZIndex: =11
+
+        Icon3 As icon.NextArrow:
+            Color: =_brandColor.MainBlue
+            Height: =40
+            Icon: =Icon.NextArrow
+            OnSelect: |-
+                =Set(
+                    currReq,
+                    ThisItem
+                );
+                Switch(
+                    currReq.流程状态,
+                    RequestStage1,
+                    Navigate(Screen_product);
+                    EditForm(Form_product),
+                    RequestStage7,
+                    Navigate(Screen_sales_confirm);
+                    EditForm(Form_product_1),
+                    RequestStage2,
+                    Navigate(Screen_Market_approval);
+                    ViewForm(Form_product_2),
+                    RequestStage3,
+                    Navigate(Screen_product_tp);
+                    EditForm(Form_product_4),
+                    RequestStage5,
+                    Navigate(Screen_Business_approval);
+                    ViewForm(Form_product_5),
+                    RequestStage6,
+                    Navigate(Screen_GM_approval);
+                    ViewForm(Form_product_6),
+                    RequestStage8,
+                    Navigate(Screen_product_cost);
+                    EditForm(Form_product_7),
+                    RequestStage11,
+                    Navigate(Screen_sales_support);
+                    EditForm(Form_product_9),
+                    RequestStage10,
+                    Navigate(Screen_new);
+                    EditForm(Form_Ini)
+                )
+            Visible: =ThisItem.PendingOn = User().Email 
+            Width: =36
+            X: =1210
+            Y: =10
+            ZIndex: =12
+
+        Icon5 As icon.Add:
+            Height: =21
+            Icon: =Icon.Add
+            OnSelect: |-
+                =NewForm(Form_Ini);Navigate(Screen_new,None,{sameProj:true});
+            Visible: =isSalesRole
+            Width: =21
+            X: =157
+            Y: =20
+            ZIndex: =13
+
+        Icon3_1 As icon.NextArrow:
+            Color: =_brandColor.MainBlue
+            Height: =40
+            Icon: =Icon.View
+            OnSelect: |-
+                =Set(
+                    currReq,
+                    ThisItem
+                );
+                If(
+                    isSalesRole,
+                    Navigate(Screen_sales_confirm),
+                    Navigate(Screen_sales_support)
+                )
+            Visible: =Not(ThisItem.PendingOn = User().Email) 
+            Width: =36
+            X: =1210
+            Y: =10
+            ZIndex: =14
+
+    Label7 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="项目名称"
+        Y: =64
+        ZIndex: =4
+
+    Label7_1 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="最终用户"
+        Width: =220
+        X: =150
+        Y: =64
+        ZIndex: =5
+
+    Label7_3 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="产品型号"
+        X: =370
+        Y: =64
+        ZIndex: =6
+
+    Label7_4 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="流程状态"
+        Width: =85
+        X: =575
+        Y: =64
+        ZIndex: =7
+
+    Label7_5 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="赢/丢单"
+        Width: =73
+        X: =683
+        Y: =64
+        ZIndex: =8
+
+    Label7_6 As label:
+        Align: =Align.Center
+        Fill: =_brandColor.LightGreyTint
+        Text: ="采购渠道"
+        Visible: =IsBlank(LookUp(Exp_Quotation_User_Roles,销售邮箱 = User().Email))
+        Width: =114
+        X: =1252
+        Y: =64
+        ZIndex: =9
+
+    Label7_7 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="销售"
+        Width: =61
+        X: =770
+        Y: =64
+        ZIndex: =10
+
+    Label7_8 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="申请日期"
+        Width: =135
+        X: =831
+        Y: =64
+        ZIndex: =11
+
+    Label7_9 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="超时"
+        Width: =70
+        X: =1124
+        Y: =64
+        ZIndex: =12
+
+    Label7_10 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="操作"
+        Width: =65
+        X: =1187
+        Y: =64
+        ZIndex: =13
+
+    Label7_11 As label:
+        Align: =Align.Right
+        Fill: =_brandColor.LightGreyTint
+        Text: ="申请编号"
+        Width: =161
+        X: =966
+        Y: =64
+        ZIndex: =14
+
+    Button1 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =_brandColor.LightGreyTint
+        FontWeight: =FontWeight.Normal
+        Height: =28
+        OnSelect: =Navigate(Screen_mytask)
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Size: =12
+        Text: ="我的任务"
+        Visible: =Not(isSalesRole)
+        Width: =122
+        X: =1170
+        Y: =18
+        ZIndex: =15
+
+    Button1_1 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =_brandColor.LightGreyTint
+        FontWeight: =FontWeight.Normal
+        Height: =28
+        OnSelect: |-
+            =ResetForm(Form_Ini);NewForm(Form_Ini);Navigate(Screen_new,None,{sameProj:false});Set(currReq,Defaults(Exp_Quotation_main_list))
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Size: =12
+        Text: ="新建询价+"
+        Visible: =isSalesRole
+        Width: =122
+        X: =1021
+        Y: =18
+        ZIndex: =16
+
+    filter_项目名称 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"项目名称"})
+        Width: =18
+        X: =150
+        Y: =77
+        ZIndex: =17
+
+    fliter_最终用户 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"最终用户"})
+        Width: =18
+        X: =370
+        Y: =77
+        ZIndex: =18
+
+    filter_产品型号 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"产品型号"})
+        Width: =18
+        X: =515
+        Y: =77
+        ZIndex: =19
+
+    filter_流程状态 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"流程状态"})
+        Width: =18
+        X: =655
+        Y: =77
+        ZIndex: =20
+
+    fitler_是否赢单 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"是否赢单"})
+        Width: =18
+        X: =752
+        Y: =77
+        ZIndex: =21
+
+    filter_采购渠道 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"采购渠道"})
+        Visible: =IsBlank(LookUp(Exp_Quotation_User_Roles,销售邮箱 = User().Email))
+        Width: =18
+        X: =1348
+        Y: =77
+        ZIndex: =22
+
+    filter_销售 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"销售"})
+        Width: =18
+        X: =830
+        Y: =77
+        ZIndex: =23
+
+    filter_申请日期 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"申请日期"})
+        Width: =18
+        X: =964
+        Y: =77
+        ZIndex: =24
+
+    filter_申请编号 As icon.Filter:
+        Height: =20
+        Icon: =Icon.FilterFlat
+        OnSelect: |-
+            =UpdateContext({showFilter:"申请编号"})
+        Width: =18
+        X: =1124
+        Y: =77
+        ZIndex: =25
+
+    Input_项目名称 As text:
+        BorderColor: =_brandColor.DeepGrey
+        Default: =""
+        HintText: ="输入项目名称"
+        Visible: =showFilter="项目名称"
+        Width: =198
+        X: =60
+        Y: =97
+        ZIndex: =26
+
+    seacrh_项目名称 As icon.Search:
+        Height: =27
+        Icon: =Icon.Search
+        OnSelect: |-
+            =ClearCollect(mainList,Search(mainList,Input_项目名称.Text,"OData__x9879__x76ee__x540d__x79f0_"));UpdateContext({showFilter:""})
+        Visible: =showFilter="项目名称"
+        Width: =28
+        X: =230
+        Y: =103
+        ZIndex: =27
+
+    Input_最终用户 As text:
+        BorderColor: =_brandColor.DeepGrey
+        Default: =""
+        HintText: ="输入最终客户"
+        Visible: =showFilter="最终用户"
+        Width: =187
+        X: =283
+        Y: =103
+        ZIndex: =28
+
+    seacrh_最终用户 As icon.Search:
+        Height: =27
+        Icon: =Icon.Search
+        OnSelect: |-
+            =ClearCollect(mainList,Search(mainList,Input_最终用户.Text,"OData__x6700__x7ec8__x5ba2__x6237__x54"));UpdateContext({showFilter:""})
+        Visible: =showFilter="最终用户"
+        Width: =28
+        X: =438
+        Y: =110
+        ZIndex: =29
+
+    Input_合作伙伴 As text:
+        BorderColor: =_brandColor.DeepGrey
+        Default: =""
+        HintText: ="输入最终客户"
+        Visible: =showFilter="合作伙伴"
+        Width: =171
+        X: =377
+        Y: =97
+        ZIndex: =30
+
+    seacrh_合作伙伴 As icon.Search:
+        Height: =27
+        Icon: =Icon.Search
+        Visible: =showFilter="合作伙伴"
+        Width: =28
+        X: =520
+        Y: =103
+        ZIndex: =31
+
+    Input_产品型号 As text:
+        BorderColor: =_brandColor.DeepGrey
+        Default: =""
+        HintText: ="输入产品型号"
+        Visible: =showFilter="产品型号"
+        Width: =171
+        X: =438
+        Y: =97
+        ZIndex: =32
+
+    seacrh_产品型号 As icon.Search:
+        Height: =27
+        Icon: =Icon.Search
+        OnSelect: |-
+            =ClearCollect(mainList,Filter(mainList,产品型号=Input_产品型号.Text || IsBlank(Input_产品型号.Text)));UpdateContext({showFilter:""})
+        Visible: =showFilter="产品型号"
+        Width: =28
+        X: =581
+        Y: =104
+        ZIndex: =33
+
+    drp_流程状态 As dropdown:
+        Color: =RGBA(56, 96, 178, 1)
+        Items: =["",RequestStage1,RequestStage2,RequestStage3,RequestStage4,RequestStage5,RequestStage6,RequestStage7,RequestStage8,RequestStage9,RequestStage10]
+        OnChange: |-
+            =ClearCollect(mainList,Filter(mainList,流程状态=drp_流程状态.Selected.Value || IsBlank(drp_流程状态.Selected.Value)));UpdateContext({showFilter:""})
+        Visible: =showFilter="流程状态"
+        Width: =152
+        X: =570
+        Y: =97
+        ZIndex: =34
+
+    drp_是否赢单 As dropdown:
+        Color: =RGBA(56, 96, 178, 1)
+        Items: =["","是","否","待确定"]
+        OnChange: |-
+            =ClearCollect(mainList,Filter(mainList,是否赢单.Value=drp_是否赢单.Selected.Value || IsBlank(drp_是否赢单.Selected.Value)));UpdateContext({showFilter:""})
+        Visible: =showFilter="是否赢单"
+        Width: =80
+        X: =702
+        Y: =97
+        ZIndex: =35
+
+    drp_采购渠道 As dropdown:
+        Color: =RGBA(56, 96, 178, 1)
+        Items: =["","IC3","外购"]
+        Visible: =showFilter="采购渠道"
+        Width: =116
+        X: =1250
+        Y: =97
+        ZIndex: =36
+
+    Input_销售 As text:
+        BorderColor: =_brandColor.DeepGrey
+        Default: =""
+        HintText: ="输入销售"
+        Visible: =showFilter="销售"
+        Width: =118
+        X: =785
+        Y: =97
+        ZIndex: =37
+
+    seacrh_销售 As icon.Search:
+        Height: =27
+        Icon: =Icon.Search
+        OnSelect: |-
+            =ClearCollect(mainList,Filter(mainList,销售=Input_销售.Text || IsBlank(Input_销售.Text)));UpdateContext({showFilter:""})
+        Visible: =showFilter="销售"
+        Width: =28
+        X: =875
+        Y: =104
+        ZIndex: =38
+
+    dp_申请日期 As datepicker:
+        DefaultDate: =Blank()
+        OnChange: |-
+            =ClearCollect(mainList,Filter(mainList,申请日期 = dp_申请日期.SelectedDate || IsBlank(dp_申请日期.SelectedDate)));UpdateContext({showFilter:""})
+        Visible: =showFilter="申请日期"
+        Width: =165
+        X: =879
+        Y: =97
+        ZIndex: =39
+
+    Input_申请编号 As text:
+        BorderColor: =_brandColor.DeepGrey
+        Default: =""
+        HintText: ="输入申请编号"
+        Visible: =showFilter="申请编号"
+        Width: =178
+        X: =1044
+        Y: =97
+        ZIndex: =40
+
+    seacrh_申请编号 As icon.Search:
+        Height: =27
+        Icon: =Icon.Search
+        OnSelect: |-
+            =ClearCollect(mainList,Filter(mainList,Title = Input_申请编号.Text || IsBlank(Input_申请编号.Text)));UpdateContext({showFilter:""})
+        Visible: =showFilter="申请编号"
+        Width: =28
+        X: =1194
+        Y: =103
+        ZIndex: =41
+
+    refresh As icon.Reload:
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =35
+        Icon: =Icon.Reload
+        OnSelect: |
+            =Refresh(Exp_Quotation_main_list);
+            UpdateContext({showFilter: ""});
+            Reset(Input_项目名称);
+            Reset(Input_产品型号);
+            Reset(Input_合作伙伴);
+            Reset(Input_最终用户);
+            Reset(Input_销售);
+            Reset(Input_申请编号);
+            Reset(drp_是否赢单);
+            Reset(drp_流程状态);
+            Reset(drp_采购渠道);
+            Reset(dp_申请日期);
+            
+            Set(showLoad,true);
+            Set(
+                isSalesRole,
+                Not(
+                    IsBlank(
+                        LookUp(
+                            Exp_Quotation_User_Roles,
+                            销售邮箱 = User().Email
+                        )
+                    )
+                )
+            );
+            Set(
+                userTeam,
+                LookUp(
+                    Exp_Quotation_User_Roles,
+                    产品专员邮箱 = User().Email || 销售邮箱 = User().Email || 市场部经理邮箱 = User().Email || 销售经理邮箱 = User().Email || 销售支持邮箱 = User().Email
+                ).销售团队
+            );
+            Set(
+                userBus,
+                LookUp(
+                    Exp_Quotation_Approver_Config,
+                    Title = User().Email
+                ).业务线
+            );
+            If(
+                isSalesRole,
+                ClearCollect(
+                    mainList,
+                    Filter(
+                        Exp_Quotation_main_list,
+                        'Created By'.Email = User().Email
+                    )
+                ),
+                If(
+                    IsBlank(userTeam),
+                    If(
+                        Not(IsBlank(userBus)),
+                        If(
+                            userBus = "CTS",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    业务线.Value = "CTS"
+                                )
+                            ),
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    业务线.Value = "AGE" || 业务线.Value = "OFA"
+                                )
+                            )
+                        ),
+                        ClearCollect(
+                            mainList,
+                            Exp_Quotation_main_list
+                        )
+                    ),
+                    If(
+                        Not(IsBlank(userBus)),
+                        If(
+                            userBus = "CTS",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    业务线.Value = "CTS" || 销售团队 = userTeam
+                                )
+                            ),
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    业务线.Value = "AGE" || 业务线.Value = "OFA" || 销售团队 = userTeam
+                                )
+                            )
+                        ),
+                        ClearCollect(
+                            mainList,
+                            Filter(
+                                Exp_Quotation_main_list,
+                                销售团队 = userTeam
+                            )
+                        )
+                    )
+                )
+            );
+            Set(showLoad,false);
+        Width: =35
+        X: =1320
+        Y: =11
+        ZIndex: =42
+
+    refresh_label As label:
+        Align: =Align.Center
+        Color: =RGBA(255, 255, 255, 1)
+        Height: =18
+        Size: =8
+        Text: ="刷新重置"
+        Width: =60
+        X: =1306
+        Y: =46
+        ZIndex: =43
+
+    cpn_loading_5 As cpn_loading:
+        Visible: =showLoad
+        ZIndex: =44
+

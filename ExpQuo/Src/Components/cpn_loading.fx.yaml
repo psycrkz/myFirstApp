@@ -1,0 +1,16 @@
+cpn_loading As CanvasComponent:
+    Fill: =RGBA(153, 153, 153, 0.4)
+    Height: =App.DesignHeight
+    Width: =App.DesignWidth
+    X: =0
+    Y: =0
+    ZIndex: =3
+
+    Image1 As image:
+        Height: =323
+        Image: =loading_2
+        Width: =403
+        X: =(cpn_loading.Width-Self.Width)/2
+        Y: =(cpn_loading.Height-Self.Height)/2
+        ZIndex: =1
+

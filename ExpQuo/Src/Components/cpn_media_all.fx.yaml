@@ -1,0 +1,175 @@
+cpn_media_all As CanvasComponent:
+    DefaultIndex: =1
+    Fill: =RGBA(153, 153, 153, 0.4)
+    Height: =App.DesignHeight
+    Medias: |-
+        =Table({Value:"",Name:"",Extension:""})
+    OnClose: =true
+    OnReset: |-
+        =Set(lcGuidIndex,cpn_media_all.DefaultIndex);
+        Reset(ComboBox1);
+    Show: =false
+    Title: ="图片/视频"
+    Width: =App.DesignWidth
+    X: =0
+    Y: =0
+    ZIndex: =2
+
+    Container6_2 As groupContainer.manualLayoutContainer:
+        BorderColor: =RGBA(128, 128, 128, 1)
+        BorderThickness: =1
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =Parent.Height-Self.Y
+        Width: =800
+        X: =Parent.Width-Self.Width
+        Y: =64
+        ZIndex: =1
+
+        Gallery9_2 As gallery.galleryHorizontal:
+            Height: =555
+            Items: =cpn_media_all.Medias
+            TemplatePadding: =8
+            TemplateSize: =589
+            Transition: =Transition.Pop
+            Visible: =false
+            Width: =Parent.Width- (Self.X *2)
+            X: =33
+            Y: =80
+            ZIndex: =1
+
+            Image11_2 As image:
+                BorderThickness: =2
+                Height: =426
+                Image: =ThisItem.Value
+                Visible: =Match( ThisItem.Name, "[^\.]\w*$").FullMatch in ["jpg","png","svg","jpeg","gif"]
+                Width: =Parent.TemplateWidth
+                Y: =40
+                ZIndex: =2
+
+            Video3_2 As videoPlayback:
+                BorderThickness: =2
+                Fill: =RGBA(241, 244, 249, 0.5)
+                Height: =426
+                Media: =ThisItem.Value
+                Visible: =Match( ThisItem.Name, "[^\.]\w*$").FullMatch in ["mp4","wav"]
+                Width: =Parent.TemplateWidth
+                Y: =40
+                ZIndex: =3
+
+            lbl_filename As label:
+                Align: =Align.Center
+                Color: =RGBA(255, 255, 255, 1)
+                Fill: =RGBA(153, 153, 153, 0.5)
+                Height: =50
+                Text: =ThisItem.Name
+                Width: =510
+                X: =33
+                Y: =40
+                ZIndex: =4
+
+        icon_close_1 As icon.Cancel:
+            Height: =32
+            Icon: =Icon.Cancel
+            OnSelect: |-
+                =Reset(ComboBox1);
+                cpn_media_all.OnClose();
+            Width: =48
+            X: =Parent.Width-Self.Width-10
+            Y: =22
+            ZIndex: =6
+
+        "Gallery10 As gallery.'BrowseLayout_Flexible_SocialFeed_ver4.0'":
+            Height: =Parent.Height-Self.Y-20
+            Items: |-
+                =If(IsBlank(ComboBox1.Selected.Name),Filter( cpn_media_all.Medias,Extension in ["jpg","png","svg","jpeg","gif","mp4","wav"]),
+                Filter( cpn_media_all.Medias,Name=ComboBox1.Selected.Name))
+            Layout: =Layout.Vertical
+            TemplatePadding: =4
+            TemplateSize: =647
+            Width: =790
+            X: =5
+            Y: =195
+            ZIndex: =7
+
+            Image8 As image:
+                BorderColor: =RGBA(204, 204, 204, 1)
+                BorderThickness: =1
+                Height: =Parent.TemplateHeight - 60
+                Image: =ThisItem.Value
+                OnSelect: =Select(Parent)
+                Visible: =Match( ThisItem.Name, "[^\.]\w*$").FullMatch in ["jpg","png","svg","jpeg","gif"]
+                Width: =Parent.TemplateWidth
+                Y: =5
+                ZIndex: =3
+
+            Body3 As label:
+                AutoHeight: =true
+                Height: =Self.Size * 4
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =ThisItem.Name
+                VerticalAlign: =VerticalAlign.Top
+                Width: =Parent.TemplateWidth
+                Y: =Image8.Y + Image8.Height + 16
+                ZIndex: =4
+
+            Video3 As videoPlayback:
+                BorderColor: =RGBA(204, 204, 204, 1)
+                BorderThickness: =1
+                Height: =Image8.Height
+                Media: =ThisItem.Value
+                Visible: =Match( ThisItem.Name, "[^\.]\w*$").FullMatch in ["mp4","wav"]
+                Width: =Image8.Width
+                X: =Image8.X
+                Y: =Image8.Y
+                ZIndex: =5
+
+        Label6 As label:
+            Align: =Align.Center
+            Color: =RGBA(255, 255, 255, 1)
+            Fill: =RGBA(0, 153, 204, 1)
+            FontWeight: =FontWeight.Bold
+            Height: =50
+            Size: =16
+            Text: =cpn_media_all.Title
+            Width: =Parent.Width
+            Y: =72
+            ZIndex: =8
+
+        Label3 As label:
+            FontWeight: =FontWeight.Semibold
+            Text: ="File Name(文件名)"
+            Width: =180
+            X: =40
+            Y: =135
+            ZIndex: =9
+
+        ComboBox1 As combobox:
+            BorderColor: =RGBA(55,61,65,1)
+            ChevronBackground: =RGBA(0, 153, 204, 1)
+            ChevronHoverBackground: =RGBA(0,102,179,1)
+            DisplayFields: =["Name"]
+            FocusedBorderThickness: =2
+            InputTextPlaceholder: ="Search"
+            Items: =Filter( cpn_media_all.Medias, Extension in ["jpg","png","svg","jpeg","gif","mp4","wav"])
+            SearchFields: =["Name"]
+            SearchItems: =Search(Filter( cpn_media_all.Medias, Extension in ["jpg","png","svg","jpeg","gif","mp4","wav"]),ComboBox1.SearchText,"Name")
+            SelectionFill: =RGBA(0, 153, 204, 1)
+            SelectMultiple: =false
+            X: =210
+            Y: =135
+            ZIndex: =10
+
+        Label9 As label:
+            Align: =Align.Center
+            Color: =RGBA(153, 153, 153, 1)
+            FontWeight: =FontWeight.Semibold
+            Text: ="There is no image or video"
+            Visible: =IsEmpty(Filter( cpn_media_all.Medias, Extension in ["jpg","png","svg","jpeg","gif","mp4","wav"]))
+            Width: =Parent.Width
+            Y: =260
+            ZIndex: =11
+
