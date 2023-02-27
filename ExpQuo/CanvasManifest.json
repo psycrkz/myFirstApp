@@ -20,7 +20,7 @@
       "cdsdataformatting": false,
       "classiccontrols": false,
       "consistentreturnschemafortabularfunctions": false,
-      "copyandmerge": true,
+      "copyandmerge": false,
       "datatablev2control": true,
       "dataverseactionsenabled": false,
       "delaycontrolrendering": false,
