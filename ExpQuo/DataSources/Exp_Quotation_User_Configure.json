@@ -33,7 +33,8 @@
       "Modified": "Modified",
       "Role": "Role",
       "Role#Id": "Role Id",
-      "Title": "Title"
+      "Title": "Title",
+      "UserTeam": "User Team"
     },
     "DatasetName": "https://onevirtualoffice.sharepoint.com/sites/CT_CC_Pneumatech",
     "EncodeDataset": true,
