@@ -2221,7 +2221,15 @@ Screen_Market_approval As screen:
         PendingOn_DataCard1_5 As typedDataCard.textualEditCard:
             BorderStyle: =BorderStyle.Solid
             DataField: ="PendingOn"
-            Default: =If(DataCardValue24_2.Selected.Value="IC3",ThisItem.'Created By'.Email,LookUp(Exp_Quotation_User_Roles,销售邮箱=ThisItem.'Created By'.Email).市场部经理邮箱)
+            Default: |-
+                =If(
+                    DataCardValue24_2.Selected.Value = "IC3",
+                    ThisItem.'Created By'.Email,
+                    LookUp(
+                        Exp_Quotation_User_Roles,
+                        销售邮箱 = ThisItem.'Created By'.Email
+                    ).产品专员邮箱
+                )
             DisplayMode: =Parent.DisplayMode
             DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"PendingOn")
             Fill: =RGBA(0, 0, 0, 0)
