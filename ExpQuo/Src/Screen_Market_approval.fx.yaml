@@ -3479,8 +3479,8 @@ Screen_Market_approval As screen:
                     {
                         Title: currReq.Title,
                         reqID: currReq.ID,
-                        'Operation Action':If(nextStage=RequestStage3,"方案审批通过",If(nextStage=RequestStage3,"方案审批退回","方案审批拒绝")),
-                        'Pending Action':If(nextStage=RequestStage3,"待产品定价",If(nextStage=RequestStage3,"待方案确认","流程结束")),
+                        'Operation Action':If(nextStage=RequestStage3,"方案审批通过",If(nextStage=RequestStage1,"方案审批退回","方案审批拒绝")),
+                        'Pending Action':If(nextStage=RequestStage3,"待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).产品专员&"产品定价",If(nextStage=RequestStage1,"待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).产品专员&"方案确认","流程结束")),
                         Comments:cpn_confirm_comment_1.CommentText
                     }
                 );

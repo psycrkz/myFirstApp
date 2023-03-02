@@ -3685,7 +3685,7 @@ Screen_Business_approval As screen:
                         Title: currReq.Title,
                         reqID: currReq.ID,
                         'Operation Action':If(comMessage="确认审批通过","业务主管审批通过",If(comMessage="确认退回上一步","业务主管退回","业务主管拒绝")),
-                        'Pending Action':If(comMessage="确认审批通过",If(currReq.'Need GM Approve',"待GM审批","待赢单确认"),If(comMessage="确认退回上一步","待产品定价","流程结束")),
+                        'Pending Action':If(comMessage="确认审批通过",If(currReq.'Need GM Approve',"待GM"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).GM&"审批","待"&currReq.'Created By'.DisplayName&"赢单确认"),If(comMessage="确认退回上一步","待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).产品专员&"产品定价","流程结束")),
                         Comments:cpn_confirm_comment_2.CommentText
                     }
                 );

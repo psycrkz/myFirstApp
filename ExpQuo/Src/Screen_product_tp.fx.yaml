@@ -45,7 +45,7 @@ Screen_product_tp As screen:
                     Title: currReq.Title,
                     reqID: currReq.ID,
                     'Operation Action': "产品定价确认",
-                    'Pending Action': "待报价审批",
+                    'Pending Action': "待"&LookUp(Exp_Quotation_Approver_Config,业务线=currReq.业务线.Value).审批人&"报价审批",
                     Comments:cpn_confirm_comment_8.CommentText
                 }
             );
@@ -3769,7 +3769,7 @@ Screen_product_tp As screen:
                         Title: currReq.Title,
                         reqID: currReq.ID,
                         'Operation Action':"产品定价退回",
-                        'Pending Action':"待方案确认",
+                        'Pending Action':"待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).产品专员&"方案确认",
                         Comments:cpn_confirm_comment_5.CommentText
                     }
                 );

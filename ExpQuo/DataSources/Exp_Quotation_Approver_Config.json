@@ -32,6 +32,7 @@
       "ID": "ID",
       "Modified": "Modified",
       "OData__x4e1a__x52a1__x7ebf_": "业务线",
+      "OData__x5ba1__x6279__x4eba_": "审批人",
       "Role": "Role",
       "Title": "Title"
     },
