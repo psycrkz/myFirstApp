@@ -41,7 +41,7 @@ Screen_new As screen:
                         Title: Form_Ini.LastSubmit.Title,
                         reqID: Form_Ini.LastSubmit.ID,
                         'Operation Action': "销售保存草稿",
-                        'Pending Action': "待销售提交"
+                        'Pending Action': "待"&Form_Ini.LastSubmit.'Created By'.DisplayName&"提交"
                     }
                 ),
                 Patch(
@@ -52,7 +52,7 @@ Screen_new As screen:
                         reqID: Form_Ini.LastSubmit.ID,
                         'Operation Action': "销售提交",
                         Comments:cpn_confirm_comment_6.CommentText,
-                        'Pending Action': "待方案确认"
+                        'Pending Action': "待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=User().Email).产品专员&"方案确认"
                     }
                 )
             );
