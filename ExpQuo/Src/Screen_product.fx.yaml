@@ -39,8 +39,8 @@ Screen_product As screen:
                     'Operation Action': "方案已确认",
                     'Pending Action': If(
                         Form_product.LastSubmit.采购渠道.Value = "IC3",
-                        "待赢单确认",
-                        "待方案审批"
+                        "待"&currReq.'Created By'.DisplayName&"赢单确认",
+                        "待方"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).市场部经理&"案审批"
                     ),
                     Comments:cpn_confirm_comment_7.CommentText
                 }
