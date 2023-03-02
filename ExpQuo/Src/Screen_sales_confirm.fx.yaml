@@ -49,8 +49,8 @@ Screen_sales_confirm As screen:
                         Form_product_1.LastSubmit.是否赢单.Value = "是",
                         If(
                             Form_product_1.LastSubmit.采购渠道.Value = "IC3",
-                            "待号码申请",
-                            "待采购信息"
+                            "待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).销售支持&"号码申请",
+                            "待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).采购专员&"采购信息"
                         ),
                         "流程结束"
                     ),

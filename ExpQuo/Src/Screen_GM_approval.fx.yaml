@@ -3673,7 +3673,7 @@ Screen_GM_approval As screen:
                         Title: currReq.Title,
                         reqID: currReq.ID,
                         'Operation Action':If(nextStage=RequestStage7,"GM审批通过",If(nextStage=RequestStage3,"GM审批退回","GM审批拒绝")),
-                        'Pending Action':If(nextStage=RequestStage7,"待赢单确认",If(nextStage=RequestStage3,"待产品定价","流程结束")),
+                        'Pending Action':If(nextStage=RequestStage7,"待"&currReq.'Created By'.DisplayName&"赢单确认",If(nextStage=RequestStage3,"待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).产品专员&"产品定价","流程结束")),
                         Comments:cpn_confirm_comment_3.CommentText
                     }
                 );

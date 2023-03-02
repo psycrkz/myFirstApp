@@ -40,7 +40,7 @@ Screen_product_cost As screen:
                     Title: currReq.Title,
                     reqID: currReq.ID,
                     'Operation Action': "采购已确认",
-                    'Pending Action': "待申请号码",
+                    'Pending Action': "待"&LookUp(Exp_Quotation_User_Roles,销售邮箱=currReq.'Created By'.Email).销售支持&"申请号码",
                     Comments:cpn_confirm_comment_9.CommentText
                 }
             );
