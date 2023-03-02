@@ -3735,7 +3735,7 @@ Screen_product As screen:
                     ),
                     'Pending Action': If(
                         nextStage = RequestStage10,
-                        "待销售提交",
+                        "待销售"&currReq.'Created By'.DisplayName&"提交",
                         "流程结束"
                     ),
                     Comments:cpn_confirm_comment_4.CommentText
