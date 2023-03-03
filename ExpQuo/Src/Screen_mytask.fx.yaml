@@ -53,7 +53,7 @@ Screen_mytask As screen:
     gly_main_list_2 As gallery.galleryVertical:
         Height: =664
         Items: |
-            =Sort(Filter(mainList,PendingOn=User().Email),Created,Descending)
+            =Sort(Filter(mainList,PendingOn=User().Email),Created,SortOrder.Descending)
             /*
                 Sort(
                     Filter(

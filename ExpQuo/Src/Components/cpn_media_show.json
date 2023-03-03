@@ -19,7 +19,7 @@
       "Name": "Medias",
       "PropertyDataTypeKey": "Table",
       "Tooltip": "Medias 支持图片和视频",
-      "Type": "{\"Version\":\"1.328\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Table\",\"EnumString\":\"\",\"Type\":[{\"Name\":\"Index\",\"Kind\":\"Number\",\"EnumString\":\"\",\"Type\":[]},{\"Name\":\"Media\",\"Kind\":\"Record\",\"EnumString\":\"\",\"Type\":[{\"Name\":\"Name\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]},{\"Name\":\"Value\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]}]}]}}"
+      "Type": "{\"Version\":\"1.329\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Table\",\"EnumString\":\"\",\"Type\":[{\"Name\":\"Index\",\"Kind\":\"Number\",\"EnumString\":\"\",\"Type\":[]},{\"Name\":\"Media\",\"Kind\":\"Record\",\"EnumString\":\"\",\"Type\":[{\"Name\":\"Name\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]},{\"Name\":\"Value\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]}]}]}}"
     },
     {
       "Category": 0,
@@ -28,7 +28,7 @@
       "Name": "DefaultIndex",
       "PropertyDataTypeKey": "Number",
       "Tooltip": "默认显示",
-      "Type": "{\"Version\":\"1.328\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Number\",\"EnumString\":\"\",\"Type\":[]}}"
+      "Type": "{\"Version\":\"1.329\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Number\",\"EnumString\":\"\",\"Type\":[]}}"
     },
     {
       "Category": 0,
@@ -37,7 +37,7 @@
       "Name": "ClosedOwn",
       "PropertyDataTypeKey": "Boolean",
       "Tooltip": "关闭",
-      "Type": "{\"Version\":\"1.328\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"_MinPrimitive\",\"EnumString\":\"\",\"Type\":[]}}"
+      "Type": "{\"Version\":\"1.329\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"_MinPrimitive\",\"EnumString\":\"\",\"Type\":[]}}"
     }
   ],
   "FirstParty": true,
@@ -48,7 +48,7 @@
   "IsPcfControl": false,
   "IsPremiumPcfControl": false,
   "IsWidgetTemplate": false,
-  "LastModifiedTimestamp": "638133156485279631",
+  "LastModifiedTimestamp": "638134041568291410",
   "Name": "9fcc199bb756427da968dc8e5005b0c1",
   "OverridableProperties": {},
   "TemplateOriginalName": "370d2fc4a85e4013a83b21cd7a811816",

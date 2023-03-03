@@ -1,5 +1,5 @@
 SPListItemAttachmentsViewer As CanvasComponent:
-    BackgroundColor: =White
+    BackgroundColor: =Color.White
     Border: =false
     Fill: =RGBA(0, 0, 0, 0)
     Height: =640
@@ -39,7 +39,7 @@ SPListItemAttachmentsViewer As CanvasComponent:
             )
         );
         Reset(galAttachments)
-    TextColor: =Black
+    TextColor: =Color.Black
     Width: =640
     WrapCount: =1
     X: =0

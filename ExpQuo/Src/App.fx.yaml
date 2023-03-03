@@ -159,7 +159,7 @@ App As appinfo:
         Set(
             userTeam,
             UserRole.'User Team'
-        );
+            );
         Set (
             userBus,
             LookUp(

@@ -46,13 +46,13 @@ Screen_home As screen:
         ZIndex: =1
 
     cpn_header_2 As cpn_header:
-        ScreenTitle: ="非标询价系统"
+        ScreenTitle: ="非标询价系统 v1.1"
         ZIndex: =2
 
     gly_main_list As gallery.galleryVertical:
         Height: =664
         Items: |
-            =Sort(mainList,Created,Descending)
+            =Sort(mainList,Created,SortOrder.Descending)
             /*
                 Sort(
                     Filter(
@@ -213,7 +213,7 @@ Screen_home As screen:
             Height: =21
             Icon: =Icon.Add
             OnSelect: |-
-                =NewForm(Form_Ini);Navigate(Screen_new,None,{sameProj:true});
+                =NewForm(Form_Ini);Navigate(Screen_new,BorderStyle.None,{sameProj:true});
             Visible: =isSalesRole
             Width: =21
             X: =157
@@ -361,7 +361,7 @@ Screen_home As screen:
         FontWeight: =FontWeight.Normal
         Height: =28
         OnSelect: |-
-            =ResetForm(Form_Ini);NewForm(Form_Ini);Navigate(Screen_new,None,{sameProj:false});Set(currReq,Defaults(Exp_Quotation_main_list))
+            =ResetForm(Form_Ini);NewForm(Form_Ini);Navigate(Screen_new,BorderStyle.None,{sameProj:false});Set(currReq,Defaults(Exp_Quotation_main_list))
         RadiusBottomLeft: =0
         RadiusBottomRight: =0
         RadiusTopLeft: =0
