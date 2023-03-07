@@ -634,7 +634,7 @@ Screen_home As screen:
         Color: =RGBA(255, 255, 255, 1)
         Height: =35
         Icon: =Icon.Reload
-        OnSelect: |
+        OnSelect: |+
             =Refresh(Exp_Quotation_main_list);
             UpdateContext({showFilter: ""});
             Reset(Input_项目名称);
@@ -661,13 +661,17 @@ Screen_home As screen:
                 )
             );
             Set(
-                userTeam,
+                UserRole,
                 LookUp(
-                    Exp_Quotation_User_Roles,
-                    产品专员邮箱 = User().Email || 销售邮箱 = User().Email || 市场部经理邮箱 = User().Email || 销售经理邮箱 = User().Email || 销售支持邮箱 = User().Email
-                ).销售团队
+                    Exp_Quotation_User_Configure,
+                    Title = User().Email
+                )
             );
             Set(
+                userTeam,
+                UserRole.'User Team'
+                );
+            Set (
                 userBus,
                 LookUp(
                     Exp_Quotation_Approver_Config,
@@ -684,7 +688,7 @@ Screen_home As screen:
                     )
                 ),
                 If(
-                    IsBlank(userTeam),
+                    IsBlank(UserRole),
                     If(
                         Not(IsBlank(userBus)),
                         If(
@@ -728,17 +732,41 @@ Screen_home As screen:
                                 )
                             )
                         ),
-                        ClearCollect(
-                            mainList,
-                            Filter(
-                                Exp_Quotation_main_list,
-                                销售团队 = userTeam
+                        Switch(
+                            UserRole.Role.Value,
+                            "产品专员",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    产品专员团队 = userTeam
+                                )
+                            ),
+                            "市场部经理",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    市场部经理团队 = userTeam
+                                )
+                            ),
+                            "销售支持",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    销售支持团队 = userTeam
+                                )
                             )
-                        )
+                        );
                     )
                 )
             );
-            Set(showLoad,false);
+            Set(
+                showLoad,
+                false
+            );
+            
         Width: =35
         X: =1320
         Y: =11
