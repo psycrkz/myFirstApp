@@ -1,6 +1,6 @@
 Screen_mytask As screen:
-    OnVisible: |-
-        =Refresh(Exp_Quotation_main_list);
+    OnVisible: |
+        =
         UpdateContext({showFilter: ""});
         Reset(Input_项目名称_2);
         Reset(Input_产品型号_2);
@@ -12,30 +12,6 @@ Screen_mytask As screen:
         Reset(drp_流程状态_2);
         Reset(drp_采购渠道_2);
         Reset(dp_申请日期_2);
-        If(
-            isSalesRole,
-            ClearCollect(
-                mainList,
-                Filter(
-                    Exp_Quotation_main_list,
-                    'Created By'.Email = User().Email
-                )
-            ),
-            If(
-                IsBlank(userTeam),
-                ClearCollect(
-                    mainList,
-                    Exp_Quotation_main_list
-                ),
-                ClearCollect(
-                    mainList,
-                    Filter(
-                        Exp_Quotation_main_list,
-                        销售团队 = userTeam
-                    )
-                )
-            )
-        )
 
     Label7_13 As label:
         Align: =Align.Right
