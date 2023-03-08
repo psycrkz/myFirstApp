@@ -563,7 +563,7 @@ Screen_mytask As screen:
         Color: =RGBA(255, 255, 255, 1)
         Height: =35
         Icon: =Icon.Reload
-        OnSelect: |-
+        OnSelect: |
             =Refresh(Exp_Quotation_main_list);
             UpdateContext({showFilter: ""});
             Reset(Input_项目名称_2);
@@ -576,6 +576,36 @@ Screen_mytask As screen:
             Reset(drp_流程状态_2);
             Reset(drp_采购渠道_2);
             Reset(dp_申请日期_2);
+            Set(showLoad,true);
+            Set(
+                isSalesRole,
+                Not(
+                    IsBlank(
+                        LookUp(
+                            Exp_Quotation_User_Roles,
+                            销售邮箱 = User().Email
+                        )
+                    )
+                )
+            );
+            Set(
+                UserRole,
+                LookUp(
+                    Exp_Quotation_User_Configure,
+                    Title = User().Email
+                )
+            );
+            Set(
+                userTeam,
+                UserRole.'User Team'
+                );
+            Set (
+                userBus,
+                LookUp(
+                    Exp_Quotation_Approver_Config,
+                    Title = User().Email
+                ).业务线
+            );
             If(
                 isSalesRole,
                 ClearCollect(
@@ -586,20 +616,84 @@ Screen_mytask As screen:
                     )
                 ),
                 If(
-                    IsBlank(userTeam),
-                    ClearCollect(
-                        mainList,
-                        Exp_Quotation_main_list
-                    ),
-                    ClearCollect(
-                        mainList,
-                        Filter(
-                            Exp_Quotation_main_list,
-                            销售团队 = userTeam
+                    IsBlank(UserRole),
+                    If(
+                        Not(IsBlank(userBus)),
+                        If(
+                            userBus = "CTS",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    业务线.Value = "CTS"
+                                )
+                            ),
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    业务线.Value = "AGE" || 业务线.Value = "OFA"
+                                )
+                            )
+                        ),
+                        ClearCollect(
+                            mainList,
+                            Exp_Quotation_main_list
                         )
+                    ),
+                    If(
+                        Not(IsBlank(userBus)),
+                        If(
+                            userBus = "CTS",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    业务线.Value = "CTS" || 销售团队 = userTeam
+                                )
+                            ),
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    业务线.Value = "AGE" || 业务线.Value = "OFA" || 销售团队 = userTeam
+                                )
+                            )
+                        ),
+                        Switch(
+                            UserRole.Role.Value,
+                            "产品专员",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    产品专员团队 = userTeam
+                                )
+                            ),
+                            "市场部经理",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    市场部经理团队 = userTeam
+                                )
+                            ),
+                            "销售支持",
+                            ClearCollect(
+                                mainList,
+                                Filter(
+                                    Exp_Quotation_main_list,
+                                    销售支持团队 = userTeam
+                                )
+                            )
+                        );
                     )
                 )
-            )
+            );
+            Set(
+                showLoad,
+                false
+            );
         Width: =35
         X: =1320
         Y: =11
