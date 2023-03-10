@@ -159,13 +159,20 @@ App As appinfo:
         Set(
             userTeam,
             UserRole.'User Team'
-            );
+        );
         Set (
             userBus,
             LookUp(
                 Exp_Quotation_Approver_Config,
                 Title = User().Email
             ).业务线
+        );
+        Set (
+            isBLM,
+            LookUp(
+                Exp_Quotation_Approver_Config,
+                Title = User().Email
+            ).Role = "BLM" || User().Email = "ji.guo.ge@cn.pneumatech.com"
         );
         If(
             isSalesRole,
