@@ -514,7 +514,7 @@ Screen_home As screen:
         Height: =27
         Icon: =Icon.Search
         OnSelect: |-
-            =ClearCollect(mainList,Filter(mainList,产品型号=Input_产品型号.Text || IsBlank(Input_产品型号.Text)));UpdateContext({showFilter:""})
+            =ClearCollect(mainList,Search(mainList,Input_产品型号.Text,"OData__x4ea7__x54c1__x578b__x53f7_"));UpdateContext({showFilter:""})
         Visible: =showFilter="产品型号"
         Width: =28
         X: =581
