@@ -58,14 +58,12 @@ Screen_home As screen:
         ZIndex: =3
 
         Label5 As label:
-            Align: =Align.Right
             OnSelect: =Select(Parent)
             Text: =Left(ThisItem.项目名称,8)
             Y: =10
             ZIndex: =1
 
         Label5_1 As label:
-            Align: =Align.Right
             OnSelect: =Select(Parent)
             Text: =Left(ThisItem.最终客户名称,8)
             Width: =183
@@ -74,11 +72,10 @@ Screen_home As screen:
             ZIndex: =2
 
         Label5_3 As label:
-            Align: =Align.Right
             OnSelect: =Select(Parent)
             Text: =ThisItem.产品型号
             Width: =182
-            X: =388
+            X: =402
             Y: =10
             ZIndex: =4
 

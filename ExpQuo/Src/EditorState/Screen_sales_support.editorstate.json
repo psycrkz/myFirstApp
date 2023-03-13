@@ -967,7 +967,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "DataCard4_11",
-      "ParentIndex": 35,
+      "ParentIndex": 30,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -28998,7 +28998,14 @@
           "IsLockable": true,
           "NameMapSourceSchema": "?"
         },
-        "Mode",
+        {
+          "AFDDataSourceName": "",
+          "AutoRuleBindingEnabled": false,
+          "AutoRuleBindingString": "",
+          "InvariantPropertyName": "Mode",
+          "IsLockable": false,
+          "NameMapSourceSchema": "?"
+        },
         "Format",
         "VirtualKeyboardMode",
         "DelayOutput",
@@ -69705,7 +69712,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "产品型号_DataCard1_11",
-      "ParentIndex": 43,
+      "ParentIndex": 42,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -71543,7 +71550,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "精度_DataCard2_8",
-      "ParentIndex": 32,
+      "ParentIndex": 35,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -71716,7 +71723,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机负载_DataCard2_8",
-      "ParentIndex": 31,
+      "ParentIndex": 32,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -72062,7 +72069,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机回收级数_DataCard2_8",
-      "ParentIndex": 29,
+      "ParentIndex": 34,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -72227,7 +72234,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机类型_DataCard2_8",
-      "ParentIndex": 30,
+      "ParentIndex": 28,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -72395,7 +72402,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机品牌_DataCard2_8",
-      "ParentIndex": 28,
+      "ParentIndex": 31,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -73053,7 +73060,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "零件种类_DataCard2_8",
-      "ParentIndex": 34,
+      "ParentIndex": 33,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -73719,7 +73726,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "能量回收进水温度_DataCard1_8",
-      "ParentIndex": 33,
+      "ParentIndex": 29,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -73887,7 +73894,7 @@
       "LayoutName": "horizontal",
       "MetaDataIDKey": "",
       "Name": "其他非标要求_DataCard1_12",
-      "ParentIndex": 42,
+      "ParentIndex": 43,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {

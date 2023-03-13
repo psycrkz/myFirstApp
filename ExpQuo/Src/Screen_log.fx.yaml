@@ -28,6 +28,7 @@ Screen_log As screen:
         ZIndex: =3
 
         Title_Column1 As dataTableColumn.textualColumn:
+            AutoWidth: =false
             DisplayMode: =DisplayMode.Edit
             FieldDisplayName: ="申请编号"
             FieldName: ="Title"
@@ -36,12 +37,13 @@ Screen_log As screen:
             LayoutHeight: =Parent.Height
             Order: =1
             Text: =ThisItem.Title
-            Width: =100
+            Width: =142
             X: =0
             Y: =0
             ZIndex: =1
 
         "'Operation Action_Column1' As dataTableColumn.textualColumn":
+            AutoWidth: =false
             DisplayMode: =DisplayMode.Edit
             FieldDisplayName: ="完成操作"
             FieldName: ="OperationAction"
@@ -50,7 +52,7 @@ Screen_log As screen:
             LayoutHeight: =Parent.Height
             Order: =3
             Text: =ThisItem.'Operation Action'
-            Width: =100
+            Width: =169
             X: =0
             Y: =0
             ZIndex: =3
@@ -70,6 +72,7 @@ Screen_log As screen:
             ZIndex: =4
 
         "'Pending Action_Column1' As dataTableColumn.textualColumn":
+            AutoWidth: =false
             DisplayMode: =DisplayMode.Edit
             FieldDisplayName: ="待操作"
             FieldName: ="PendingAction"
@@ -78,12 +81,13 @@ Screen_log As screen:
             LayoutHeight: =Parent.Height
             Order: =4
             Text: =ThisItem.'Pending Action'
-            Width: =100
+            Width: =127
             X: =0
             Y: =0
             ZIndex: =5
 
         Created_Column1 As dataTableColumn.dateTimeColumn:
+            AutoWidth: =false
             DisplayMode: =DisplayMode.Edit
             FieldDisplayName: ="操作时间"
             FieldName: ="Created"
@@ -93,12 +97,13 @@ Screen_log As screen:
             Order: =7
             Text: |-
                 =Text(ThisItem.Created,"yyyy-mm-dd hh:mm")
-            Width: =100
+            Width: =181
             X: =0
             Y: =0
             ZIndex: =7
 
         "'Modified By_Column1' As dataTableColumn.textualColumn":
+            AutoWidth: =false
             DisplayMode: =DisplayMode.Edit
             FieldDisplayName: ="操作人"
             FieldName: ="Editor"
@@ -107,7 +112,7 @@ Screen_log As screen:
             LayoutHeight: =Parent.Height
             Order: =8
             Text: =ThisItem.'Modified By'.DisplayName
-            Width: =100
+            Width: =145
             X: =0
             Y: =0
             ZIndex: =8
