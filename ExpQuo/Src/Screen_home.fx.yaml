@@ -207,7 +207,7 @@ Screen_home As screen:
                     ThisItem
                 );
                 If(
-                    isSalesRole,
+                    isSalesRole || (UserRole.Role.Value = "销售经理" && IsBlank(userBus)),
                     Navigate(Screen_sales_confirm),
                     Navigate(Screen_sales_support)
                 )

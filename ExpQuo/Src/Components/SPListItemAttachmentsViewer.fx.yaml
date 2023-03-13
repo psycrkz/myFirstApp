@@ -68,10 +68,10 @@ SPListItemAttachmentsViewer As CanvasComponent:
                 =With(
                     {
                         fileExtension: Last(
-                            Split(
+                            ForAll(Split(
                                 ThisItem.DisplayName,
                                 "."
-                            )
+                            ), {Result: ThisRecord.Value})
                         ).Result
                     },
                     If(
@@ -141,10 +141,10 @@ SPListItemAttachmentsViewer As CanvasComponent:
             Media: =ThisItem.AbsoluteUri
             Visible: |-
                 ="mp4" in Last(
-                        Split(
+                        ForAll(Split(
                             ThisItem.DisplayName,
                             "."
-                        )
+                        ), {Result: ThisRecord.Value})
                     ).Result
             Width: =AttachmentImage.Width
             X: =AttachmentImage.X
@@ -158,10 +158,10 @@ SPListItemAttachmentsViewer As CanvasComponent:
             Media: =ThisItem.Value
             Visible: |-
                 ="mp3" in Last(
-                        Split(
+                        ForAll(Split(
                             ThisItem.DisplayName,
                             "."
-                        )
+                        ), {Result: ThisRecord.Value})
                     ).Result
             Width: =AttachmentImage.Width
             X: =AttachmentImage.X
@@ -176,10 +176,10 @@ SPListItemAttachmentsViewer As CanvasComponent:
             OnSelect: =Set(varOpenPdf,true)
             Visible: |-
                 ="pdf" in Last(
-                        Split(
+                        ForAll(Split(
                             ThisItem.DisplayName,
                             "."
-                        )
+                        ), {Result: ThisRecord.Value})
                     ).Result
             Width: =48
             X: =Parent.TemplateWidth-Self.Width - 10
