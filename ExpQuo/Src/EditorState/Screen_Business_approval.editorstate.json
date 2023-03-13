@@ -960,7 +960,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "DataCard4_5",
-      "ParentIndex": 36,
+      "ParentIndex": 41,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -63151,7 +63151,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "材质_DataCard2_4",
-      "ParentIndex": 25,
+      "ParentIndex": 27,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -63791,7 +63791,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "产品型号_DataCard1_5",
-      "ParentIndex": 42,
+      "ParentIndex": 43,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -64617,7 +64617,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "工作压力(Mpa)_DataCard2_4",
-      "ParentIndex": 27,
+      "ParentIndex": 25,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -64955,7 +64955,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "环境温度_DataCard2_4",
-      "ParentIndex": 29,
+      "ParentIndex": 31,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -65296,7 +65296,7 @@
       "LayoutName": "horizontal",
       "MetaDataIDKey": "",
       "Name": "进气压力(Mpa)_DataCard1_6",
-      "ParentIndex": 18,
+      "ParentIndex": 19,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -65469,7 +65469,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "精度_DataCard2_4",
-      "ParentIndex": 41,
+      "ParentIndex": 38,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -65642,7 +65642,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机负载_DataCard2_4",
-      "ParentIndex": 38,
+      "ParentIndex": 37,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -65988,7 +65988,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机回收级数_DataCard2_4",
-      "ParentIndex": 40,
+      "ParentIndex": 35,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -66153,7 +66153,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机类型_DataCard2_4",
-      "ParentIndex": 34,
+      "ParentIndex": 36,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -66321,7 +66321,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机品牌_DataCard2_4",
-      "ParentIndex": 37,
+      "ParentIndex": 34,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -66646,7 +66646,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "冷却方式_DataCard2_4",
-      "ParentIndex": 19,
+      "ParentIndex": 17,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -66979,7 +66979,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "零件种类_DataCard2_4",
-      "ParentIndex": 39,
+      "ParentIndex": 40,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -67472,7 +67472,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "能量回收进水温度_DataCard1_4",
-      "ParentIndex": 35,
+      "ParentIndex": 39,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -67640,7 +67640,7 @@
       "LayoutName": "horizontal",
       "MetaDataIDKey": "",
       "Name": "其他非标要求_DataCard1_6",
-      "ParentIndex": 43,
+      "ParentIndex": 42,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -67805,7 +67805,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "其它配置_DataCard1_4",
-      "ParentIndex": 17,
+      "ParentIndex": 16,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -67965,7 +67965,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "热水使用温度_DataCard1_4",
-      "ParentIndex": 26,
+      "ParentIndex": 30,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -68133,7 +68133,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "热水用途_DataCard2_4",
-      "ParentIndex": 31,
+      "ParentIndex": 29,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -69560,7 +69560,7 @@
       "LayoutName": "horizontal",
       "MetaDataIDKey": "",
       "Name": "压力露点要求(℃)_DataCard1_6",
-      "ParentIndex": 16,
+      "ParentIndex": 18,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -70040,7 +70040,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "总气量（m3/min)_DataCard2_4",
-      "ParentIndex": 30,
+      "ParentIndex": 26,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {

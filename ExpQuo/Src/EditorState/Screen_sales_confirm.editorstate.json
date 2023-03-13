@@ -967,7 +967,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "DataCard4_10",
-      "ParentIndex": 36,
+      "ParentIndex": 41,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -66185,7 +66185,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "精度_DataCard2_6",
-      "ParentIndex": 41,
+      "ParentIndex": 38,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -66358,7 +66358,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机负载_DataCard2_6",
-      "ParentIndex": 38,
+      "ParentIndex": 37,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -66704,7 +66704,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机回收级数_DataCard2_6",
-      "ParentIndex": 40,
+      "ParentIndex": 35,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -66869,7 +66869,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机类型_DataCard2_6",
-      "ParentIndex": 34,
+      "ParentIndex": 36,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -67037,7 +67037,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "空压机品牌_DataCard2_6",
-      "ParentIndex": 37,
+      "ParentIndex": 34,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -67695,7 +67695,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "零件种类_DataCard2_6",
-      "ParentIndex": 39,
+      "ParentIndex": 40,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {
@@ -68188,7 +68188,7 @@
       "LayoutName": "",
       "MetaDataIDKey": "",
       "Name": "能量回收进水温度_DataCard1_6",
-      "ParentIndex": 35,
+      "ParentIndex": 39,
       "PersistMetaDataIDKey": false,
       "Properties": [
         {

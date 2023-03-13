@@ -23,7 +23,7 @@ Screen_home As screen:
         ZIndex: =1
 
     cpn_header_2 As cpn_header:
-        ScreenTitle: ="非标询价系统 v1.2"
+        ScreenTitle: ="非标询价系统 v1.4"
         ZIndex: =2
 
     gly_main_list As gallery.galleryVertical:
