@@ -58,14 +58,12 @@ Screen_mytask As screen:
         ZIndex: =3
 
         Label5_2 As label:
-            Align: =Align.Right
             OnSelect: =Select(Parent)
             Text: =Left(ThisItem.项目名称,8)
             Y: =10
             ZIndex: =1
 
         Label5_10 As label:
-            Align: =Align.Right
             OnSelect: =Select(Parent)
             Text: =Left(ThisItem.最终客户名称,8)
             Width: =183
@@ -74,7 +72,6 @@ Screen_mytask As screen:
             ZIndex: =2
 
         Label5_11 As label:
-            Align: =Align.Right
             OnSelect: =Select(Parent)
             Text: =ThisItem.产品型号
             Width: =144
@@ -469,7 +466,7 @@ Screen_mytask As screen:
         Height: =27
         Icon: =Icon.Search
         OnSelect: |-
-            =ClearCollect(mainList,Filter(mainList,产品型号=Input_产品型号_2.Text || IsBlank(Input_产品型号_2.Text)));UpdateContext({showFilter:""})
+            =ClearCollect(mainList,Search(mainList,Input_产品型号.Text,"OData__x4ea7__x54c1__x578b__x53f7_"));UpdateContext({showFilter:""})
         Visible: =showFilter="产品型号"
         Width: =28
         X: =581
