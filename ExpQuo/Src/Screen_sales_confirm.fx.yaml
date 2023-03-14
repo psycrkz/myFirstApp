@@ -1833,7 +1833,7 @@ Screen_sales_confirm As screen:
             Required: =true
             Update: =DataCardValue23_10.Selected
             Width: =455
-            X: =2
+            X: =1
             Y: =17
             ZIndex: =1
 
@@ -1955,6 +1955,74 @@ Screen_sales_confirm As screen:
                 Width: =30
                 Wrap: =false
                 Y: =DataCardKey17.Y
+                ZIndex: =4
+
+        "'面价(元)_DataCard1' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x9762__x4ef7_"
+            Default: =ThisItem.'面价(元)'
+            DisplayMode: =Parent.DisplayMode
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x9762__x4ef7_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =Value(DataCardValue45.Text)
+            Visible: =currReq.流程状态 = RequestStage7 || currReq.流程状态 = RequestStage8 || currReq.流程状态 = RequestStage11 || currReq.流程状态 = RequestStage9
+            Width: =455
+            X: =1
+            Y: =18
+            ZIndex: =1
+
+            DataCardKey45 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue45.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue45 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =ThisItem.'面价(元)'
+                DelayOutput: =true
+                DisplayMode: =DisplayMode.View
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey45.X + DataCardKey45.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage45 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue45.Y + DataCardValue45.Height
+                ZIndex: =3
+
+            StarVisible45 As label:
+                Align: =Align.Center
+                Height: =DataCardKey45.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey45.Y
                 ZIndex: =4
 
         DataCard15 As typedDataCard.blankCard:
@@ -3453,7 +3521,7 @@ Screen_sales_confirm As screen:
             Update: =DataCardValue17_11.Text
             Visible: =Not(IsBlank(Self.Default))
             Width: =455
-            X: =1
+            X: =2
             Y: =17
             ZIndex: =3
 
