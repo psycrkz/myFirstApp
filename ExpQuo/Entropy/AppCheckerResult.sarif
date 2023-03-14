@@ -20736,36 +20736,6 @@
             {
               "logicalLocations": [
                 {
-                  "fullyQualifiedName": "Screen_product.locCate"
-                }
-              ],
-              "physicalLocation": {
-                "address": {
-                  "fullyQualifiedName": "Screen_product.locCate",
-                  "relativeAddress": 0
-                }
-              },
-              "properties": {
-                "member": "locCate",
-                "module": "Screen_product",
-                "type": "Screen_product"
-              }
-            }
-          ],
-          "message": {
-            "id": "issue"
-          },
-          "properties": {
-            "level": "Medium"
-          },
-          "ruleId": "app-UnusedVariables",
-          "ruleIndex": 6
-        },
-        {
-          "locations": [
-            {
-              "logicalLocations": [
-                {
                   "fullyQualifiedName": "Screen_new"
                 }
               ],

@@ -1756,7 +1756,7 @@ Screen_product As screen:
         产品型号_DataCard1 As typedDataCard.textualEditCard:
             BorderStyle: =BorderStyle.Solid
             DataField: ="OData__x4ea7__x54c1__x578b__x53f7_"
-            Default: =ThisItem.产品型号
+            Default: =If(IsBlank(ThisItem.产品型号),If(Not(DataCardValue18_1.Selected.Value = "过滤器"),ThisItem.产品型号,locCate),ThisItem.产品型号)
             DisplayMode: =If(currReq.流程状态 = RequestStage1,DisplayMode.Edit,DisplayMode.View)
             DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x4ea7__x54c1__x578b__x53f7_")
             Fill: =RGBA(0, 0, 0, 0)
