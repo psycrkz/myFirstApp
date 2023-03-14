@@ -1,7 +1,7 @@
 Screen_home As screen:
     OnVisible: |-
-        =Refresh(Exp_Quotation_main_list);
-        UpdateContext({showFilter: ""});
+        =//Refresh(Exp_Quotation_main_list);
+        //UpdateContext({showFilter: ""});
         Reset(Input_项目名称);
         Reset(Input_产品型号);
         Reset(Input_合作伙伴);
@@ -12,7 +12,7 @@ Screen_home As screen:
         Reset(drp_流程状态);
         Reset(drp_采购渠道);
         Reset(dp_申请日期);
-        Select(refresh);
+        //Select(refresh);
 
     Label7_12 As label:
         Align: =Align.Right
@@ -23,7 +23,7 @@ Screen_home As screen:
         ZIndex: =1
 
     cpn_header_2 As cpn_header:
-        ScreenTitle: ="非标询价系统 v1.4"
+        ScreenTitle: ="非标询价系统 v1.6"
         ZIndex: =2
 
     gly_main_list As gallery.galleryVertical:
