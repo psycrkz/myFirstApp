@@ -98,7 +98,7 @@
             "Name": "icon_close_3",
             "Parent": "Container2_1",
             "PersistMetaDataIDKey": false,
-            "PublishOrderIndex": 2678,
+            "PublishOrderIndex": 2683,
             "Rules": [
               {
                 "Category": "Design",
@@ -375,7 +375,7 @@
             "Name": "Label11_1",
             "Parent": "Container2_1",
             "PersistMetaDataIDKey": false,
-            "PublishOrderIndex": 2679,
+            "PublishOrderIndex": 2684,
             "Rules": [
               {
                 "Category": "Data",
@@ -720,7 +720,7 @@
             "Name": "TextInput1",
             "Parent": "Container2_1",
             "PersistMetaDataIDKey": false,
-            "PublishOrderIndex": 2680,
+            "PublishOrderIndex": 2685,
             "Rules": [
               {
                 "Category": "Data",
@@ -1134,7 +1134,7 @@
             "Name": "btn_reset_5",
             "Parent": "Container2_1",
             "PersistMetaDataIDKey": false,
-            "PublishOrderIndex": 2681,
+            "PublishOrderIndex": 2686,
             "Rules": [
               {
                 "Category": "Data",
@@ -1535,7 +1535,7 @@
             "Name": "btn_reset_6",
             "Parent": "Container2_1",
             "PersistMetaDataIDKey": false,
-            "PublishOrderIndex": 2682,
+            "PublishOrderIndex": 2687,
             "Rules": [
               {
                 "Category": "Data",
@@ -1856,7 +1856,7 @@
         "Name": "Container2_1",
         "Parent": "cpn_confirm_comment",
         "PersistMetaDataIDKey": false,
-        "PublishOrderIndex": 2677,
+        "PublishOrderIndex": 2682,
         "Rules": [
           {
             "Category": "Design",

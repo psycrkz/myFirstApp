@@ -23,7 +23,7 @@ Screen_home As screen:
         ZIndex: =1
 
     cpn_header_2 As cpn_header:
-        ScreenTitle: ="非标询价系统 v1.6"
+        ScreenTitle: ="非标询价系统 v1.7"
         ZIndex: =2
 
     gly_main_list As gallery.galleryVertical:
@@ -546,6 +546,8 @@ Screen_home As screen:
     drp_采购渠道 As dropdown:
         Color: =RGBA(56, 96, 178, 1)
         Items: =["","IC3","外购"]
+        OnChange: |-
+            =ClearCollect(mainList,Filter(mainList,采购渠道.Value=drp_采购渠道.Selected.Value || IsBlank(drp_采购渠道.Selected.Value)));UpdateContext({showFilter:""})
         Visible: =showFilter="采购渠道"
         Width: =116
         X: =1250
