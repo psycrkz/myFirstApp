@@ -2366,6 +2366,7 @@ Screen_sales_support As screen:
 
         DataCard17 As typedDataCard.blankCard:
             BorderStyle: =BorderStyle.Solid
+            BorderThickness: =1
             DisplayMode: =DisplayMode.Edit
             Fill: =RGBA(0, 0, 0, 0)
             Height: =206
@@ -2382,13 +2383,13 @@ Screen_sales_support As screen:
                 Layout: =Layout.Vertical
                 TemplatePadding: =0
                 TemplateSize: =34
-                Width: =1348
+                Width: =Parent.Width
                 Y: =40
                 ZIndex: =2
 
                 Title10_32 As label:
                     FontWeight: =FontWeight.Normal
-                    Height: =25
+                    Height: =30
                     OnSelect: =Select(Parent)
                     PaddingBottom: =0
                     PaddingLeft: =0
@@ -2398,23 +2399,9 @@ Screen_sales_support As screen:
                     Text: =ThisItem.Title
                     VerticalAlign: =VerticalAlign.Top
                     Width: =148
-                    X: =32
-                    Y: =8
+                    X: =13
+                    Y: =4
                     ZIndex: =1
-
-                Subtitle9_5 As label:
-                    Height: =Self.Size * 1.8
-                    OnSelect: =Select(Parent)
-                    PaddingBottom: =0
-                    PaddingLeft: =0
-                    PaddingRight: =0
-                    PaddingTop: =0
-                    Text: =ThisItem.'Compliance Asset Id'
-                    VerticalAlign: =VerticalAlign.Top
-                    Width: =Parent.TemplateWidth - 104
-                    X: =32
-                    Y: =1.6000000000000014
-                    ZIndex: =2
 
                 Separator10_5 As rectangle:
                     Height: =1
@@ -2425,128 +2412,111 @@ Screen_sales_support As screen:
 
                 Title10_33 As label:
                     FontWeight: =FontWeight.Normal
-                    Height: =25
+                    Height: =30
                     OnSelect: =Select(Parent)
                     PaddingBottom: =0
                     PaddingLeft: =0
                     PaddingRight: =0
                     PaddingTop: =0
                     Size: =13
-                    Text: ="型号：" & ThisItem.category
+                    Text: =ThisItem.category
                     VerticalAlign: =VerticalAlign.Top
                     Width: =308
                     X: =180
-                    Y: =8
+                    Y: =5
                     ZIndex: =5
 
                 Title10_34 As label:
                     FontWeight: =FontWeight.Normal
-                    Height: =25
+                    Height: =30
                     OnSelect: =Select(Parent)
                     PaddingBottom: =0
                     PaddingLeft: =0
                     PaddingRight: =0
                     PaddingTop: =0
                     Size: =13
-                    Text: ="精度：" & ThisItem.accuracy
+                    Text: =ThisItem.accuracy
                     VerticalAlign: =VerticalAlign.Top
                     Width: =204
                     X: =488
-                    Y: =9
+                    Y: =5
                     ZIndex: =6
 
                 Title10_35 As label:
                     FontWeight: =FontWeight.Normal
-                    Height: =25
+                    Height: =30
                     OnSelect: =Select(Parent)
                     PaddingBottom: =0
                     PaddingLeft: =0
                     PaddingRight: =0
                     PaddingTop: =0
                     Size: =13
-                    Text: ="数量：" & ThisItem.amount
+                    Text: =ThisItem.amount
                     VerticalAlign: =VerticalAlign.Top
-                    Width: =98
+                    Width: =72
                     X: =692
-                    Y: =9
+                    Y: =5
                     ZIndex: =7
 
                 Title10_36 As label:
                     FontWeight: =FontWeight.Normal
-                    Height: =25
+                    Height: =30
                     OnSelect: =Select(Parent)
                     PaddingBottom: =0
                     PaddingLeft: =0
                     PaddingRight: =0
                     PaddingTop: =0
                     Size: =13
-                    Text: ="其他：" & ThisItem.Comment
+                    Text: =ThisItem.Comment
                     VerticalAlign: =VerticalAlign.Top
-                    Width: =184
-                    X: =790
-                    Y: =9
+                    Width: =205
+                    X: =764
+                    Y: =5
                     ZIndex: =8
 
                 Title10_37 As label:
                     FontWeight: =FontWeight.Normal
-                    Height: =26
+                    Height: =30
                     OnSelect: =Select(Parent)
                     PaddingBottom: =0
                     PaddingLeft: =0
                     PaddingRight: =0
                     PaddingTop: =0
                     Size: =13
-                    Text: |-
-                        ="面价(KRMB):" & ThisItem.Price
+                    Text: =ThisItem.Price
                     VerticalAlign: =VerticalAlign.Top
-                    Width: =149
-                    X: =932
-                    Y: =8
+                    Width: =114
+                    X: =969
+                    Y: =5
                     ZIndex: =10
 
                 Title10_38 As label:
                     FontWeight: =FontWeight.Normal
-                    Height: =25
+                    Height: =30
                     OnSelect: =Select(Parent)
                     PaddingBottom: =0
                     PaddingLeft: =0
                     PaddingRight: =0
                     PaddingTop: =0
                     Size: =13
-                    Text: ="TP：" & ThisItem.Cost
+                    Text: =ThisItem.Cost
                     VerticalAlign: =VerticalAlign.Top
                     Width: =108
                     X: =1083
-                    Y: =9
+                    Y: =5
                     ZIndex: =11
-
-                Title10_39 As label:
-                    FontWeight: =FontWeight.Normal
-                    Height: =26
-                    OnSelect: =Select(Parent)
-                    PaddingBottom: =0
-                    PaddingLeft: =0
-                    PaddingRight: =0
-                    PaddingTop: =0
-                    Size: =13
-                    Text: ="PN："
-                    VerticalAlign: =VerticalAlign.Top
-                    Width: =41
-                    X: =1191
-                    Y: =8
-                    ZIndex: =12
 
                 TextInput_pn As text:
                     Default: =ThisItem.PN
                     DisplayMode: =If(currReq.流程状态 = RequestStage11,DisplayMode.Edit,DisplayMode.Disabled)
-                    Height: =23
+                    Height: =25
                     OnChange: |-
                         =Patch(filterList,ThisItem,{PN:TextInput_pn.Text})
                     OnSelect: =Select(Parent)
                     PaddingLeft: =5
-                    Width: =118
-                    X: =1225
-                    Y: =8
+                    Width: =133
+                    X: =1191
+                    Y: =5
                     ZIndex: =13
 
             Label18 As label:
@@ -2554,9 +2524,46 @@ Screen_sales_support As screen:
                 ZIndex: =3
 
             Label18_1 As label:
-                Text: ="名称"
+                Text: ="型号"
+                Width: =75
                 X: =176
                 ZIndex: =4
+
+            Label18_2 As label:
+                Text: ="精度"
+                Width: =75
+                X: =478
+                ZIndex: =5
+
+            Label18_3 As label:
+                Text: ="数量"
+                Width: =75
+                X: =688
+                ZIndex: =6
+
+            Label18_4 As label:
+                Text: ="其他"
+                Width: =75
+                X: =763
+                ZIndex: =7
+
+            Label18_5 As label:
+                Text: ="面价(KRMB)"
+                Width: =121
+                X: =961
+                ZIndex: =8
+
+            Label18_6 As label:
+                Text: ="TP"
+                Width: =121
+                X: =1082
+                ZIndex: =9
+
+            Label18_7 As label:
+                Text: ="PN"
+                Width: =121
+                X: =1192
+                ZIndex: =10
 
         DataCard6_1 As typedDataCard.blankCard:
             BorderStyle: =BorderStyle.Solid

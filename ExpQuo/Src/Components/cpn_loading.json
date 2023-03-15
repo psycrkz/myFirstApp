@@ -72,7 +72,7 @@
         "Name": "Image1",
         "Parent": "cpn_loading",
         "PersistMetaDataIDKey": false,
-        "PublishOrderIndex": 2692,
+        "PublishOrderIndex": 2696,
         "Rules": [
           {
             "Category": "Data",
