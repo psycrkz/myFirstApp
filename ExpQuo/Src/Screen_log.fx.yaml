@@ -81,7 +81,7 @@ Screen_log As screen:
             LayoutHeight: =Parent.Height
             Order: =4
             Text: =ThisItem.'Pending Action'
-            Width: =127
+            Width: =176
             X: =0
             Y: =0
             ZIndex: =5
