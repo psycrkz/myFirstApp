@@ -105,7 +105,7 @@
       "OData__x9500__x552e__x652f__x6301__x56": "销售支持团队",
       "OData__x96f6__x4ef6__x79cd__x7c7b_": "零件种类",
       "OData__x96f6__x4ef6__x79cd__x7c7b_#Id": "零件种类 Id",
-      "OData__x9762__x4ef7_": "面价(元)",
+      "OData__x9762__x4ef7_": "面价(KRMB)",
       "OData__x9879__x76ee__x540d__x79f0_": "项目名称",
       "OData__x9879__x76ee__x7c7b__x578b_": "项目类型",
       "OData__x9879__x76ee__x7c7b__x578b_#Id": "项目类型 Id",

@@ -1756,6 +1756,74 @@ Screen_product_tp As screen:
                 Width: =1365
                 ZIndex: =1
 
+        预计TP_DataCard1_4 As typedDataCard.numberEditCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="OData__x9884__x8ba1_TP"
+            Default: =ThisItem.'预计TP(元)'
+            DisplayMode: =If(currReq.流程状态 = RequestStage3,DisplayMode.Edit,DisplayMode.View)
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x9884__x8ba1_TP")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =Not(currReq.产品类别.Value = "过滤器")
+            Update: =Value(DataCardValue28_4.Text)
+            Visible: =Not(currReq.产品类别.Value = "过滤器")
+            Width: =455
+            X: =2
+            Y: =19
+            ZIndex: =1
+
+            DataCardKey28_4 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue28_4.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue28_4 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey28_4.X + DataCardKey28_4.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage28_4 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue28_4.Y + DataCardValue28_4.Height
+                ZIndex: =3
+
+            StarVisible28_4 As label:
+                Align: =Align.Center
+                Height: =DataCardKey28_4.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey28_4.Y
+                ZIndex: =4
+
         产品型号_DataCard1_4 As typedDataCard.textualEditCard:
             BorderStyle: =BorderStyle.Solid
             DataField: ="OData__x4ea7__x54c1__x578b__x53f7_"
@@ -1770,7 +1838,7 @@ Screen_product_tp As screen:
             Visible: =Not(currReq.产品类别.Value = "过滤器")
             Width: =455
             X: =0
-            Y: =18
+            Y: =17
             ZIndex: =1
 
             DataCardKey21_4 As label:
@@ -1836,8 +1904,8 @@ Screen_product_tp As screen:
             Required: =true
             Update: =DataCardValue23_4.Selected
             Width: =455
-            X: =1
-            Y: =18
+            X: =0
+            Y: =19
             ZIndex: =1
 
             DataCardKey23_4 As label:
@@ -1902,8 +1970,8 @@ Screen_product_tp As screen:
             Required: =true
             Update: =DataCardValue24_4.Selected
             Width: =455
-            X: =2
-            Y: =18
+            X: =1
+            Y: =19
             ZIndex: =1
 
             DataCardKey24_4 As label:
@@ -1958,88 +2026,20 @@ Screen_product_tp As screen:
                 Y: =DataCardKey24_4.Y
                 ZIndex: =4
 
-        预计TP_DataCard1_4 As typedDataCard.numberEditCard:
-            BorderStyle: =BorderStyle.Solid
-            DataField: ="OData__x9884__x8ba1_TP"
-            Default: =ThisItem.'预计TP(元)'
-            DisplayMode: =If(currReq.流程状态 = RequestStage3,DisplayMode.Edit,DisplayMode.View)
-            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x9884__x8ba1_TP")
-            Fill: =RGBA(0, 0, 0, 0)
-            Height: =50
-            Required: =Not(currReq.产品类别.Value = "过滤器")
-            Update: =Value(DataCardValue28_4.Text)
-            Visible: =Not(currReq.产品类别.Value = "过滤器")
-            Width: =455
-            X: =0
-            Y: =19
-            ZIndex: =1
-
-            DataCardKey28_4 As label:
-                AutoHeight: =true
-                Height: =34
-                Text: =Parent.DisplayName
-                Width: =(Parent.Width - 60) * 0.4
-                Wrap: =false
-                X: =30
-                Y: =10 + (DataCardValue28_4.Height / 2) - (Self.Height / 2)
-                ZIndex: =1
-
-            DataCardValue28_4 As text:
-                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
-                Default: =Parent.Default
-                DelayOutput: =true
-                DisplayMode: =Parent.DisplayMode
-                Format: =TextFormat.Number
-                PaddingLeft: =5
-                RadiusBottomLeft: =0
-                RadiusBottomRight: =0
-                RadiusTopLeft: =0
-                RadiusTopRight: =0
-                Tooltip: =Parent.DisplayName
-                Width: =(Parent.Width - 60) * 0.6
-                X: =DataCardKey28_4.X + DataCardKey28_4.Width
-                Y: =10
-                ZIndex: =2
-
-            ErrorMessage28_4 As label:
-                AutoHeight: =true
-                Height: =10
-                Live: =Live.Assertive
-                PaddingBottom: =0
-                PaddingLeft: =0
-                PaddingRight: =0
-                PaddingTop: =0
-                Text: =Parent.Error
-                Visible: =Parent.DisplayMode=DisplayMode.Edit
-                Width: =Parent.Width - 60
-                X: =30
-                Y: =DataCardValue28_4.Y + DataCardValue28_4.Height
-                ZIndex: =3
-
-            StarVisible28_4 As label:
-                Align: =Align.Center
-                Height: =DataCardKey28_4.Height
-                Text: ="*"
-                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
-                Width: =30
-                Wrap: =false
-                Y: =DataCardKey28_4.Y
-                ZIndex: =4
-
         面价_DataCard2_3 As typedDataCard.numberEditCard:
             BorderStyle: =BorderStyle.Solid
             DataField: ="OData__x9762__x4ef7_"
-            Default: =ThisItem.'面价(元)'
+            Default: =ThisItem.'面价(KRMB)'
             DisplayMode: =If(currReq.流程状态 = RequestStage3,DisplayMode.Edit,DisplayMode.View)
             DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"OData__x9762__x4ef7_")
             Fill: =RGBA(0, 0, 0, 0)
             Height: =50
             Required: =Not(currReq.产品类别.Value = "过滤器")
-            Update: =Value(DataCardValue93_3.Text)
+            Update: =Round(Value(DataCardValue93_3.Text),2)
             Visible: =Not(currReq.产品类别.Value = "过滤器")
             Width: =455
-            X: =1
-            Y: =19
+            X: =0
+            Y: =20
             ZIndex: =1
 
             DataCardKey93_3 As label:
@@ -2096,13 +2096,14 @@ Screen_product_tp As screen:
 
         DataCard10 As typedDataCard.blankCard:
             BorderStyle: =BorderStyle.Solid
+            BorderThickness: =1
             DisplayMode: =DisplayMode.Edit
             Fill: =RGBA(0, 0, 0, 0)
-            Height: =200
+            Height: =231
             Visible: =currReq.产品类别.Value = "过滤器"
             Width: =1365
             X: =0
-            Y: =20
+            Y: =21
             ZIndex: =1
 
             "Gallery3_2 As gallery.'BrowseLayout_Vertical_TwoTextVariant_ver4.0'":
@@ -2113,8 +2114,8 @@ Screen_product_tp As screen:
                 TemplatePadding: =0
                 TemplateSize: =38
                 Visible: =currReq.产品类别.Value = "过滤器"
-                Width: =1339
-                X: =5
+                Width: =Parent.Width
+                Y: =40
                 ZIndex: =2
 
                 Title4_16 As label:
@@ -2140,173 +2141,117 @@ Screen_product_tp As screen:
                     Y: =Parent.TemplateHeight - 1
                     ZIndex: =4
 
-                Title4_12 As label:
-                    FontWeight: =FontWeight.Normal
-                    Height: =28
-                    OnSelect: =Select(Parent)
-                    PaddingBottom: =0
-                    PaddingLeft: =0
-                    PaddingRight: =0
-                    PaddingTop: =0
-                    Size: =13
-                    Text: ="型号："
-                    VerticalAlign: =VerticalAlign.Top
-                    Width: =58
-                    X: =171
-                    Y: =7
-                    ZIndex: =5
-
                 TextInput_cat_2 As text:
                     Default: =ThisItem.category
-                    Height: =28
+                    Height: =31
                     OnChange: |-
                         =Patch(filterList,ThisItem,{category:TextInput_cat_2.Text})
                     OnSelect: =Select(Parent)
                     PaddingLeft: =5
-                    Width: =265
-                    X: =216
-                    Y: =5
+                    Width: =305
+                    X: =171
+                    Y: =3
                     ZIndex: =6
-
-                Title4_13 As label:
-                    FontWeight: =FontWeight.Normal
-                    Height: =28
-                    OnSelect: =Select(Parent)
-                    PaddingBottom: =0
-                    PaddingLeft: =0
-                    PaddingRight: =0
-                    PaddingTop: =0
-                    Size: =13
-                    Text: ="精度："
-                    VerticalAlign: =VerticalAlign.Top
-                    Width: =58
-                    X: =494
-                    Y: =7
-                    ZIndex: =7
 
                 TextInput_acc_2 As text:
                     Default: =ThisItem.accuracy
-                    Height: =28
+                    Height: =31
                     OnChange: |-
                         =Patch(filterList,ThisItem,{accuracy:TextInput_acc_2.Text})
                     OnSelect: =Select(Parent)
                     PaddingLeft: =5
-                    Width: =178
-                    X: =540
-                    Y: =5
+                    Width: =225
+                    X: =492
+                    Y: =3
                     ZIndex: =8
-
-                Title4_14 As label:
-                    FontWeight: =FontWeight.Normal
-                    Height: =28
-                    OnSelect: =Select(Parent)
-                    PaddingBottom: =0
-                    PaddingLeft: =0
-                    PaddingRight: =0
-                    PaddingTop: =0
-                    Size: =13
-                    Text: ="数量："
-                    VerticalAlign: =VerticalAlign.Top
-                    Width: =58
-                    X: =723
-                    Y: =8
-                    ZIndex: =9
 
                 TextInput_amt_2 As text:
                     Default: =ThisItem.amount
-                    Height: =28
+                    Height: =31
                     OnChange: |-
                         =Patch(filterList,ThisItem,{amount:TextInput_amt_2.Text})
                     OnSelect: =Select(Parent)
                     PaddingLeft: =5
                     Width: =57
-                    X: =767
-                    Y: =6
+                    X: =733
+                    Y: =3
                     ZIndex: =10
-
-                Title4_15 As label:
-                    FontWeight: =FontWeight.Normal
-                    Height: =28
-                    OnSelect: =Select(Parent)
-                    PaddingBottom: =0
-                    PaddingLeft: =0
-                    PaddingRight: =0
-                    PaddingTop: =0
-                    Size: =13
-                    Text: ="其他："
-                    VerticalAlign: =VerticalAlign.Top
-                    Width: =58
-                    X: =829
-                    Y: =8
-                    ZIndex: =11
 
                 TextInput_comment_2 As text:
                     Default: =ThisItem.Comment
-                    Height: =28
+                    Height: =31
+                    Mode: =TextMode.MultiLine
                     OnChange: |-
                         =Patch(filterList,ThisItem,{Comment:TextInput_comment_2.Text})
                     OnSelect: =Select(Parent)
                     PaddingLeft: =5
-                    Width: =171
-                    X: =875
-                    Y: =6
+                    Width: =273
+                    X: =806
+                    Y: =3
                     ZIndex: =12
-
-                Title4_17 As label:
-                    FontWeight: =FontWeight.Normal
-                    Height: =28
-                    OnSelect: =Select(Parent)
-                    PaddingBottom: =0
-                    PaddingLeft: =0
-                    PaddingRight: =0
-                    PaddingTop: =0
-                    Size: =13
-                    Text: ="TP："
-                    VerticalAlign: =VerticalAlign.Top
-                    Width: =58
-                    X: =1048
-                    Y: =8
-                    ZIndex: =13
 
                 TextInput_cost_1 As text:
                     Default: =ThisItem.Cost
-                    Height: =28
+                    Height: =31
                     OnChange: |-
                         =Patch(filterList,ThisItem,{Cost:TextInput_cost_1.Text})
                     OnSelect: =Select(Parent)
                     PaddingLeft: =5
-                    Width: =102
-                    X: =1085
-                    Y: =6
+                    Width: =116
+                    X: =1096
+                    Y: =3
                     ZIndex: =14
-
-                Title4_18 As label:
-                    FontWeight: =FontWeight.Normal
-                    Height: =28
-                    OnSelect: =Select(Parent)
-                    PaddingBottom: =0
-                    PaddingLeft: =0
-                    PaddingRight: =0
-                    PaddingTop: =0
-                    Size: =13
-                    Text: ="面价："
-                    VerticalAlign: =VerticalAlign.Top
-                    Width: =58
-                    X: =1195
-                    Y: =8
-                    ZIndex: =15
 
                 TextInput_price_1 As text:
                     Default: =ThisItem.Price
-                    Height: =28
+                    Height: =31
                     OnChange: |-
-                        =Patch(filterList,ThisItem,{Price:TextInput_price_1.Text})
+                        =Patch(filterList,ThisItem,{Price:Round(Value(TextInput_price_1.Text),2)})
                     OnSelect: =Select(Parent)
                     PaddingLeft: =5
                     Width: =99
-                    X: =1240
-                    Y: =6
+                    X: =1228
+                    Y: =3
                     ZIndex: =16
+
+            Label15 As label:
+                Text: ="名称"
+                X: =8
+                ZIndex: =3
+
+            Label15_1 As label:
+                Text: ="型号"
+                X: =175
+                ZIndex: =4
+
+            Label15_2 As label:
+                Text: ="精度"
+                X: =492
+                ZIndex: =5
+
+            Label15_3 As label:
+                Text: ="数量"
+                Width: =64
+                X: =732
+                ZIndex: =6
+
+            Label15_4 As label:
+                Text: ="其他"
+                Width: =64
+                X: =810
+                ZIndex: =7
+
+            Label15_5 As label:
+                Text: ="TP"
+                Width: =64
+                X: =1098
+                ZIndex: =8
+
+            Label15_6 As label:
+                Text: ="面价(KRMB)"
+                Width: =115
+                X: =1219
+                ZIndex: =9
 
         DataCard5_4 As typedDataCard.blankCard:
             BorderStyle: =BorderStyle.Solid
@@ -2315,7 +2260,7 @@ Screen_product_tp As screen:
             Height: =23
             Width: =1365
             X: =0
-            Y: =21
+            Y: =22
             ZIndex: =1
 
             Label2_22 As label:
@@ -2340,7 +2285,7 @@ Screen_product_tp As screen:
             Visible: =false
             Width: =455
             X: =2
-            Y: =22
+            Y: =23
             ZIndex: =1
 
             DataCardKey19_4 As label:
@@ -2409,7 +2354,7 @@ Screen_product_tp As screen:
             Visible: =false
             Width: =455
             X: =0
-            Y: =23
+            Y: =24
             ZIndex: =1
 
             DataCardKey20_4 As label:
@@ -2477,7 +2422,7 @@ Screen_product_tp As screen:
             Visible: =false
             Width: =455
             X: =1
-            Y: =23
+            Y: =24
             ZIndex: =1
 
             DataCardKey36 As label:
@@ -3559,7 +3504,7 @@ Screen_product_tp As screen:
             Visible: =Not(IsBlank(Self.Default))
             Width: =1365
             X: =0
-            Y: =17
+            Y: =18
             ZIndex: =3
 
             DataCardKey17_5 As label:
@@ -3626,7 +3571,7 @@ Screen_product_tp As screen:
             Update: =DataCardValue25_5.Attachments
             Width: =910
             X: =0
-            Y: =22
+            Y: =23
             ZIndex: =3
 
             DataCardKey25_5 As label:

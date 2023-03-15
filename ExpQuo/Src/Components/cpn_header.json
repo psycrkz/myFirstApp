@@ -124,7 +124,7 @@
         "Name": "lbl_screentitle",
         "Parent": "cpn_header",
         "PersistMetaDataIDKey": false,
-        "PublishOrderIndex": 2635,
+        "PublishOrderIndex": 2663,
         "Rules": [
           {
             "Category": "Data",
@@ -431,7 +431,7 @@
         "Name": "Image3",
         "Parent": "cpn_header",
         "PersistMetaDataIDKey": false,
-        "PublishOrderIndex": 2636,
+        "PublishOrderIndex": 2664,
         "Rules": [
           {
             "Category": "Data",
@@ -687,7 +687,7 @@
         "Name": "Icon2",
         "Parent": "cpn_header",
         "PersistMetaDataIDKey": false,
-        "PublishOrderIndex": 2637,
+        "PublishOrderIndex": 2665,
         "Rules": [
           {
             "Category": "Design",

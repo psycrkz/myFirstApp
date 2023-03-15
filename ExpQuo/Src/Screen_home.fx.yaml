@@ -1,7 +1,7 @@
 Screen_home As screen:
     OnVisible: |-
-        =//Refresh(Exp_Quotation_main_list);
-        //UpdateContext({showFilter: ""});
+        =Refresh(Exp_Quotation_main_list);
+        UpdateContext({showFilter: ""});
         Reset(Input_项目名称);
         Reset(Input_产品型号);
         Reset(Input_合作伙伴);
@@ -12,7 +12,7 @@ Screen_home As screen:
         Reset(drp_流程状态);
         Reset(drp_采购渠道);
         Reset(dp_申请日期);
-        //Select(refresh);
+        Select(refresh);
 
     Label7_12 As label:
         Align: =Align.Right
@@ -257,12 +257,12 @@ Screen_home As screen:
         ZIndex: =8
 
     Label7_6 As label:
-        Align: =Align.Center
+        Align: =Align.Right
         Fill: =_brandColor.LightGreyTint
         Text: ="采购渠道"
         Visible: =IsBlank(LookUp(Exp_Quotation_User_Roles,销售邮箱 = User().Email))
-        Width: =114
-        X: =1252
+        Width: =98
+        X: =1250
         Y: =64
         ZIndex: =9
 

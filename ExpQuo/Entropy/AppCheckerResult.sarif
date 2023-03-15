@@ -2774,49 +2774,19 @@
             {
               "logicalLocations": [
                 {
-                  "fullyQualifiedName": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_2.AccessibleLabel"
+                  "fullyQualifiedName": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_6.TabIndex"
                 }
               ],
               "physicalLocation": {
                 "address": {
-                  "fullyQualifiedName": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_2.AccessibleLabel",
-                  "relativeAddress": 0
-                }
-              },
-              "properties": {
-                "member": "AccessibleLabel",
-                "module": "Screen_GM_approval",
-                "type": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_2"
-              }
-            }
-          ],
-          "message": {
-            "id": "issue"
-          },
-          "properties": {
-            "level": "Medium"
-          },
-          "ruleId": "acc-AccessibleLabelNeeded",
-          "ruleIndex": 0
-        },
-        {
-          "locations": [
-            {
-              "logicalLocations": [
-                {
-                  "fullyQualifiedName": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_2.TabIndex"
-                }
-              ],
-              "physicalLocation": {
-                "address": {
-                  "fullyQualifiedName": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_2.TabIndex",
+                  "fullyQualifiedName": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_6.TabIndex",
                   "relativeAddress": 0
                 }
               },
               "properties": {
                 "member": "TabIndex",
                 "module": "Screen_GM_approval",
-                "type": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_2"
+                "type": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_6"
               }
             }
           ],
@@ -2828,6 +2798,36 @@
           },
           "ruleId": "acc-TabIndexShouldBeDefinedForInteractiveControl",
           "ruleIndex": 1
+        },
+        {
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_6.AccessibleLabel"
+                }
+              ],
+              "physicalLocation": {
+                "address": {
+                  "fullyQualifiedName": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_6.AccessibleLabel",
+                  "relativeAddress": 0
+                }
+              },
+              "properties": {
+                "member": "AccessibleLabel",
+                "module": "Screen_GM_approval",
+                "type": "Screen_GM_approval.Form_product_6.DataCard14.Gallery6_6"
+              }
+            }
+          ],
+          "message": {
+            "id": "issue"
+          },
+          "properties": {
+            "level": "Medium"
+          },
+          "ruleId": "acc-AccessibleLabelNeeded",
+          "ruleIndex": 0
         },
         {
           "locations": [
@@ -21160,7 +21160,7 @@
                 ],
                 "level": "Medium",
                 "primaryCategory": "performance",
-                "whyFix": "如果屏幕上的控件过多，则每个控件都将使用资源，并且应用运行速度可能变慢或可能会变得无响应。“Screen_GM_approval”的估计复杂性为 312，超过了建议的最大阈值(300)。"
+                "whyFix": "如果屏幕上的控件过多，则每个控件都将使用资源，并且应用运行速度可能变慢或可能会变得无响应。“Screen_GM_approval”的估计复杂性为 314，超过了建议的最大阈值(300)。"
               }
             },
             {
