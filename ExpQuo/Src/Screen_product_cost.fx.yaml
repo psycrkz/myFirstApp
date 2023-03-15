@@ -10,7 +10,8 @@ Screen_product_cost As screen:
                     Exp_Quotation_Fliter_Info,
                     ReqID = Text(currReq.ID)
                 )
-            )
+            );
+            UpdateContext({locTPsum:Sum(filterList,Cost)})
         )
 
     cpn_header_11 As cpn_header:
@@ -1733,7 +1734,7 @@ Screen_product_cost As screen:
             Height: =30
             Width: =1365
             X: =0
-            Y: =17
+            Y: =16
             ZIndex: =1
 
             Label2_33 As label:
@@ -2150,6 +2151,73 @@ Screen_product_cost As screen:
                 Y: =DataCardKey32.Y
                 ZIndex: =4
 
+        "'CGP(%)_DataCard3' As typedDataCard.numberEditCard":
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="CGP_x0028__x0025__x0029_"
+            Default: =(ThisItem.'成交价(元)'-locTPsum)/ThisItem.'成交价(元)'*100
+            DisplayMode: =DisplayMode.View
+            DisplayName: =DataSourceInfo([@Exp_Quotation_main_list],DataSourceInfo.DisplayName,"CGP_x0028__x0025__x0029_")
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =50
+            Required: =false
+            Update: =Value(DataCardValue72.Text)
+            Width: =455
+            X: =0
+            Y: =20
+            ZIndex: =1
+
+            DataCardKey73 As label:
+                AutoHeight: =true
+                Height: =34
+                Text: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                X: =30
+                Y: =10 + (DataCardValue72.Height / 2) - (Self.Height / 2)
+                ZIndex: =1
+
+            DataCardValue72 As text:
+                BorderColor: =If(IsBlank(Parent.Error), Parent.BorderColor, Color.Red)
+                Default: =Parent.Default
+                DelayOutput: =true
+                DisplayMode: =Parent.DisplayMode
+                Format: =TextFormat.Number
+                PaddingLeft: =5
+                RadiusBottomLeft: =0
+                RadiusBottomRight: =0
+                RadiusTopLeft: =0
+                RadiusTopRight: =0
+                Tooltip: =Parent.DisplayName
+                Width: =(Parent.Width - 60) * 0.6
+                X: =DataCardKey73.X + DataCardKey73.Width
+                Y: =10
+                ZIndex: =2
+
+            ErrorMessage72 As label:
+                AutoHeight: =true
+                Height: =10
+                Live: =Live.Assertive
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Text: =Parent.Error
+                Visible: =Parent.DisplayMode=DisplayMode.Edit
+                Width: =Parent.Width - 60
+                X: =30
+                Y: =DataCardValue72.Y + DataCardValue72.Height
+                ZIndex: =3
+
+            StarVisible72 As label:
+                Align: =Align.Center
+                Height: =DataCardKey73.Height
+                Text: ="*"
+                Visible: =And(Parent.Required, Parent.DisplayMode=DisplayMode.Edit)
+                Width: =30
+                Wrap: =false
+                Y: =DataCardKey73.Y
+                ZIndex: =4
+
         最终成本价_DataCard1 As typedDataCard.numberEditCard:
             BorderStyle: =BorderStyle.Solid
             DataField: ="OData__x6700__x7ec8__x6210__x672c__x4e"
@@ -2162,7 +2230,7 @@ Screen_product_cost As screen:
             Update: =Value(DataCardValue30.Text)
             Visible: =Not(currReq.产品类别.Value = "过滤器")
             Width: =455
-            X: =0
+            X: =1
             Y: =20
             ZIndex: =1
 
@@ -2182,6 +2250,8 @@ Screen_product_cost As screen:
                 DelayOutput: =true
                 DisplayMode: =Parent.DisplayMode
                 Format: =TextFormat.Number
+                OnChange: |-
+                    =UpdateContext({locTPsum:Value(DataCardValue30.Text)})
                 PaddingLeft: =5
                 RadiusBottomLeft: =0
                 RadiusBottomRight: =0
@@ -3714,7 +3784,7 @@ Screen_product_cost As screen:
             Visible: =Not(IsBlank(Self.Default))
             Width: =1365
             X: =0
-            Y: =16
+            Y: =17
             ZIndex: =3
 
             DataCardKey17_8 As label:

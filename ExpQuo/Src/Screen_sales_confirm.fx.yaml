@@ -2156,12 +2156,31 @@ Screen_sales_confirm As screen:
                     PaddingRight: =0
                     PaddingTop: =0
                     Size: =13
-                    Text: ="PN：" & ThisItem.PN
+                    Text: |-
+                        ="PN:" & ThisItem.PN
                     VerticalAlign: =VerticalAlign.Top
                     Width: =158
-                    X: =1078
+                    X: =1190
                     Y: =8
                     ZIndex: =11
+
+                Title10_41 As label:
+                    FontWeight: =FontWeight.Normal
+                    Height: =25
+                    OnSelect: =Select(Parent)
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Size: =13
+                    Text: |-
+                        ="面价:" & ThisItem.Price
+                    VerticalAlign: =VerticalAlign.Top
+                    Visible: =currReq.流程状态 = RequestStage7 || currReq.流程状态 = RequestStage8 || currReq.流程状态 = RequestStage11 || currReq.流程状态 = RequestStage9
+                    Width: =158
+                    X: =1032
+                    Y: =8
+                    ZIndex: =12
 
         DataCard6 As typedDataCard.blankCard:
             BorderStyle: =BorderStyle.Solid
